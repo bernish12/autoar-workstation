@@ -805,15 +805,19 @@ export default function AssemblyViewer3D({
       if (!container) return;
       const w = container.clientWidth;
       const h = container.clientHeight;
+      if (w === 0 || h === 0) return;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
     };
 
     window.addEventListener('resize', handleResize);
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(handleResize) : null;
+    if (ro) ro.observe(container);
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      if (ro) ro.disconnect();
       if (reqIdRef.current) cancelAnimationFrame(reqIdRef.current);
       if (renderer.domElement && container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);

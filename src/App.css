@@ -324,6 +324,43 @@
   color: #ffffff;
 }
 
+.header-quick-cad-switch {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 3px 6px;
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+}
+
+.btn-cad-pill {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-cad-pill:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-cad-pill.active {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(2, 132, 199, 0.45));
+  border: 1px solid rgba(0, 240, 255, 0.45);
+  color: #00f0ff;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+}
+
 .station-badge {
   display: flex;
   align-items: center;
@@ -1392,6 +1429,32 @@
 .btn-dock-next:hover:not(:disabled) {
   background: #38bdf8;
   color: #070a12;
+}
+
+.btn-dock-torque {
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-dock-torque:hover {
+  background: rgba(245, 158, 11, 0.35);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+  color: #ffffff;
+}
+
+.btn-dock-torque.verified {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #34d399;
 }
 
 .dock-step-count {

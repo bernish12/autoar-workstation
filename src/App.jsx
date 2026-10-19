@@ -121,6 +121,7 @@ export default function App() {
     setCurrentStepIndex(0);
     setCompletedSteps([]);
     setActiveTab('assembly');
+    setIsStageCardDismissed(true);
     soundFx.playSuccess();
   };
 
@@ -276,6 +277,47 @@ export default function App() {
     return () => soundFx.removeSpeakingListener(handleSpeaking);
   }, []);
 
+  // Auto-load default 320mm Ventilated Disc Brake assembly on startup
+  useEffect(() => {
+    handleLoadSpecificCAD('brake', false);
+  }, []);
+
+  // Global Keyboard Navigation Shortcuts (ArrowRight / Space -> Next, ArrowLeft -> Prev, 'Z' -> Zen, 'E' -> Explode, 'T' -> Torque)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        handleNextStep();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        handlePrevStep();
+      } else if (e.key === 'z' || e.key === 'Z') {
+        e.preventDefault();
+        soundFx.playClick();
+        setIsZenMode(prev => !prev);
+      } else if (e.key === 'e' || e.key === 'E') {
+        e.preventDefault();
+        soundFx.playClick();
+        setExplodedPercent(prev => prev === 0 ? 80 : 0);
+      } else if (e.key === 'x' || e.key === 'X') {
+        e.preventDefault();
+        soundFx.playClick();
+        setIsXRayMode(prev => !prev);
+      } else if (e.key === 't' || e.key === 'T') {
+        e.preventDefault();
+        if (currentStep?.requiresTorque) {
+          soundFx.playSuccess();
+          setCurrentTorque(currentStep.targetTorque || 45);
+          setIsTorqueVerified(true);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentStepIndex, isTorqueVerified, currentStep, isZenMode, stepsList]);
+
   // When language or module changes: preload offline voice packs, update controller and re-speak current step
   useEffect(() => {
     soundFx.setLanguage(selectedVoiceLanguage);
@@ -368,14 +410,20 @@ export default function App() {
   // --- Step Navigation Logic ---
   const handleNextStep = () => {
     if (!currentStep) return;
-    if (!isTorqueVerified) {
-      soundFx.playAlarm();
-      if (currentStep.requiresTorque) {
-        soundFx.speak('Please complete the required torque before proceeding to the next step.', null, effectiveModule);
+
+    // Check torque verification if step requires torque
+    if (!isTorqueVerified && currentStep.requiresTorque) {
+      if (isZenMode) {
+        // In Zen View, auto-apply the required target torque with chime so workflow never freezes
+        const targetTorque = currentStep.targetTorque || 45;
+        setCurrentTorque(targetTorque);
+        setIsTorqueVerified(true);
+        soundFx.playSuccess();
       } else {
-        soundFx.speak('Geometric datum alignment verified within ISO tolerance. Assembly line restored.', null, effectiveModule);
+        soundFx.playAlarm();
+        soundFx.speak('Please complete the required torque before proceeding to the next step.', null, effectiveModule);
+        return;
       }
-      return;
     }
 
     soundFx.playSuccess();
@@ -389,7 +437,8 @@ export default function App() {
         setIsTorqueVerified(true);
         setCurrentTorque(nextStep.targetTorque || 0);
       } else {
-        setIsTorqueVerified(false);
+        // If next step does not require torque, it is automatically verified
+        setIsTorqueVerified(!nextStep.requiresTorque);
         setCurrentTorque(0);
       }
       setCompletedSteps(prev => [...new Set([...prev, nextIndex + 1])]);
@@ -428,7 +477,7 @@ export default function App() {
       setIsTorqueVerified(true);
       setCurrentTorque(targetStep.targetTorque || 0);
     } else {
-      setIsTorqueVerified(false);
+      setIsTorqueVerified(!targetStep.requiresTorque);
       setCurrentTorque(0);
     }
   };
@@ -577,27 +626,54 @@ export default function App() {
         </div>
 
         <div className="header-center">
-          {/* Active CAD File Indicator or Clean Standby Indicator */}
+          {/* Quick Assembly Switcher Pills */}
+          <div className="header-quick-cad-switch">
+            <button
+              className={`btn-cad-pill ${effectiveModule === 'brake' ? 'active' : ''}`}
+              onClick={() => handleLoadSpecificCAD('brake')}
+              title="Load 320mm Ventilated Disc Brake"
+            >
+              🏎️ Brake
+            </button>
+            <button
+              className={`btn-cad-pill ${effectiveModule === 'clutch' ? 'active' : ''}`}
+              onClick={() => handleLoadSpecificCAD('clutch')}
+              title="Load Automotive Clutch System"
+            >
+              ⚙️ Clutch
+            </button>
+            <button
+              className={`btn-cad-pill ${effectiveModule === 'knuckle' ? 'active' : ''}`}
+              onClick={() => handleLoadSpecificCAD('knuckle')}
+              title="Load Kinematic Knuckle Joint"
+            >
+              🦾 Knuckle
+            </button>
+            <button
+              className={`btn-cad-pill ${effectiveModule === 'car' ? 'active' : ''}`}
+              onClick={() => handleLoadSpecificCAD('car')}
+              title="Load BMW M4 High-Performance Vehicle Assembly"
+            >
+              🏎️ BMW M4
+            </button>
+          </div>
+
+          {/* Active CAD File Indicator */}
           {customModelName ? (
             <div className="active-cad-chip loaded">
               <span className="dot pulse-green"></span>
               <div className="chip-text-group">
-                <span className="chip-label font-mono">ACTIVE FILE:</span>
+                <span className="chip-label font-mono">FILE:</span>
                 <span className="chip-filename font-mono" title={customModelName}>
-                  {customModelName.length > 24 ? customModelName.substring(0, 22) + '...' : customModelName}
+                  {customModelName.length > 20 ? customModelName.substring(0, 18) + '...' : customModelName}
                 </span>
               </div>
-              {cadStats && (
-                <span className="chip-stats-badge font-mono">
-                  {cadStats.meshesCount} PARTS • {cadStats.totalVertices.toLocaleString()} V
-                </span>
-              )}
               <button
                 className="btn-header-change-cad"
                 onClick={handleUnloadCAD}
-                title="Unload current CAD model and select another"
+                title="Unload current CAD model to upload your own"
               >
-                ✕ Change
+                📂 Import
               </button>
             </div>
           ) : (
@@ -938,28 +1014,41 @@ export default function App() {
           )}
 
           {/* Viewport Floating Quick Tools Bar */}
-          <div className="viewport-quick-tools" style={{ opacity: customModel ? 1 : 0.45, pointerEvents: customModel ? 'auto' : 'none' }}>
+          <div className="viewport-quick-tools">
             {/* Quick Step Navigation for seamless 3D & Zen Mode walkthrough */}
             <div className="dock-step-nav-group">
               <button
                 className="btn-dock-step btn-dock-prev"
                 onClick={handlePrevStep}
-                disabled={currentStepIndex === 0 || !customModel}
+                disabled={currentStepIndex === 0 || stepsList.length === 0}
                 title="Previous Step"
               >
                 ◀ Prev
               </button>
               <span className="dock-step-count font-mono">
-                {String(currentStepIndex + 1).padStart(2, '0')}/{String(stepsList.length).padStart(2, '0')}
+                {stepsList.length > 0 ? `${String(currentStepIndex + 1).padStart(2, '0')}/${String(stepsList.length).padStart(2, '0')}` : '00/00'}
               </span>
               <button
                 className="btn-dock-step btn-dock-next"
                 onClick={handleNextStep}
-                disabled={!customModel}
+                disabled={stepsList.length === 0}
                 title={currentStepIndex === stepsList.length - 1 ? 'Finish & Certify' : 'Next Step'}
               >
                 {currentStepIndex === stepsList.length - 1 ? 'Certify ✓' : 'Next ▶'}
               </button>
+              {currentStep && currentStep.requiresTorque && (
+                <button
+                  className={`btn-dock-torque ${isTorqueVerified ? 'verified' : ''}`}
+                  onClick={() => {
+                    soundFx.playSuccess();
+                    setCurrentTorque(currentStep.targetTorque || 45);
+                    setIsTorqueVerified(true);
+                  }}
+                  title="Apply required torque (Nm)"
+                >
+                  🔧 {isTorqueVerified ? `${currentStep.targetTorque || 45} Nm ✓` : `Torque (${currentStep.targetTorque || 45} Nm)`}
+                </button>
+              )}
             </div>
 
             <div className="dock-vertical-divider"></div>
@@ -973,12 +1062,12 @@ export default function App() {
                 value={explodedPercent}
                 onChange={(e) => setExplodedPercent(Number(e.target.value))}
                 className="explode-slider"
-                disabled={!customModel}
+                disabled={stepsList.length === 0}
               />
               <span className="explode-val font-mono">{explodedPercent}%</span>
               <button
                 className="btn-tiny"
-                disabled={!customModel}
+                disabled={stepsList.length === 0}
                 onClick={() => {
                   soundFx.playClick();
                   setExplodedPercent(explodedPercent === 0 ? 80 : 0);
@@ -995,7 +1084,7 @@ export default function App() {
                   soundFx.playClick();
                   setShowAllParts(!showAllParts);
                 }}
-                disabled={!customModel}
+                disabled={stepsList.length === 0}
                 title="Toggle between full solid assembly and step focus"
               >
                 {showAllParts ? '👁️ Full Solid (ON)' : '👻 Ghost Focus (AR)'}
@@ -1016,7 +1105,7 @@ export default function App() {
                   soundFx.playClick();
                   setIsXRayMode(!isXRayMode);
                 }}
-                disabled={!customModel}
+                disabled={stepsList.length === 0}
                 title="Toggle Internal Clearances & Wireframe"
               >
                 {isXRayMode ? '🦴 X-Ray (ON)' : '🦴 X-Ray View'}
@@ -1037,7 +1126,7 @@ export default function App() {
                   soundFx.playClick();
                   handleToggleDefect();
                 }}
-                disabled={!customModel}
+                disabled={stepsList.length === 0}
                 title="Trigger Real-Time Laser CMM Defect Scan"
               >
                 {isDefectSimulated ? '🔬 Close CMM Scan' : '🔬 Laser CMM Defect Scan'}
@@ -1048,7 +1137,7 @@ export default function App() {
                   soundFx.playClick();
                   setIsQRScannerOpen(true);
                 }}
-                disabled={!customModel}
+                disabled={stepsList.length === 0}
                 title="Scan component QR / Barcode with webcam (Poka-Yoke Machine Vision)"
               >
                 📱 QR Scanner
