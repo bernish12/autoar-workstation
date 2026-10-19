@@ -276,13 +276,14 @@ export default function App() {
     return () => soundFx.removeSpeakingListener(handleSpeaking);
   }, []);
 
-  // When language changes: update controller and re-speak current step in new language
+  // When language or module changes: preload offline voice packs, update controller and re-speak current step
   useEffect(() => {
     soundFx.setLanguage(selectedVoiceLanguage);
+    soundFx.preloadVoicePacks(effectiveModule, selectedVoiceLanguage);
     if (speechEnabled && currentStep?.voiceScript) {
       soundFx.speak(currentStep.voiceScript, currentStep, effectiveModule);
     }
-  }, [selectedVoiceLanguage]);
+  }, [selectedVoiceLanguage, effectiveModule]);
 
   // Trigger voice narration and set step torque on step change
   useEffect(() => {

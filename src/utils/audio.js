@@ -9,12 +9,41 @@ class SoundController {
     this.currentAudio = null;
     this.isSpeaking = false;
     this.speakingListeners = new Set();
+    this.audioCache = new Map();
   }
 
   setLanguage(langCode) {
     if (['en', 'ta', 'ml', 'hi'].includes(langCode)) {
       this.currentLanguage = langCode;
     }
+  }
+
+  // Pre-buffer voice pack audio into memory for instant, zero-latency playback
+  preloadVoicePacks(mod = 'brake', lang = this.currentLanguage) {
+    if (typeof window === 'undefined') return;
+    const maxSteps = mod === 'car' ? 12 : (mod === 'knuckle' ? 6 : 10);
+    for (let i = 1; i <= maxSteps; i++) {
+      const url = `/audio/voices/${mod}_${i}_${lang}.mp3`;
+      if (!this.audioCache.has(url)) {
+        try {
+          const audio = new Audio();
+          audio.preload = 'auto';
+          audio.src = url;
+          this.audioCache.set(url, audio);
+        } catch {}
+      }
+    }
+    ['sys_complete', 'sys_defect', 'sys_datum', 'sys_torque_req'].forEach(key => {
+      const url = `/audio/voices/${key}_${lang}.mp3`;
+      if (!this.audioCache.has(url)) {
+        try {
+          const audio = new Audio();
+          audio.preload = 'auto';
+          audio.src = url;
+          this.audioCache.set(url, audio);
+        } catch {}
+      }
+    });
   }
 
   addSpeakingListener(callback) {
@@ -78,13 +107,7 @@ class SoundController {
       preAudioFile = `/audio/voices/sys_complete_${lang}.mp3`;
     } else if (text.includes('Quality defect detected')) {
       preAudioFile = `/audio/voices/sys_defect_${lang}.mp3`;
-    } else if (text.includes('Please complete the required torque')) {
-      if (targetLang === 'ta') return 'அடுத்த படிக்கு செல்வதற்கு முன் தேவையான முறுக்குவிசையை பூர்த்தி செய்யுங்கள்.';
-      if (targetLang === 'ml') return 'അടുത്ത ഘട്ടത്തിലേക്ക് പോകുന്നതിന് മുമ്പ് ആവശ്യമായ ടോർക്ക് പൂർത്തിയാക്കുക.';
-      if (targetLang === 'hi') return 'अगले चरण पर जाने से पहले आवश्यक टॉर्क पूरा करें।';
-    }
-
-    if (text.includes('Geometric datum alignment verified')) {
+    } else if (text.includes('Geometric datum alignment verified')) {
       preAudioFile = `/audio/voices/sys_datum_${lang}.mp3`;
     } else if (text.includes('Please complete the required torque')) {
       preAudioFile = `/audio/voices/sys_torque_req_${lang}.mp3`;
@@ -105,8 +128,9 @@ class SoundController {
         }
       }
 
-      if (mod && stepObj.id >= 1 && stepObj.id <= 6) {
-        preAudioFile = `/audio/voices/${mod}_${stepObj.id}_${lang}.mp3?v=20261019_v2`;
+      const maxSteps = mod === 'car' ? 12 : (mod === 'knuckle' ? 6 : 10);
+      if (mod && stepObj.id >= 1 && stepObj.id <= maxSteps) {
+        preAudioFile = `/audio/voices/${mod}_${stepObj.id}_${lang}.mp3`;
       }
     }
 
@@ -123,10 +147,22 @@ class SoundController {
     this.fallbackSpeak(textToSpeak, lang, stepObj);
   }
 
-  // Play pre-recorded or dynamically fetched audio file
+  // Play pre-recorded or dynamically fetched audio file with zero latency
   playVoiceAudioFile(audioUrl, spokenText, lang, onFallback) {
     try {
-      const audio = new Audio(audioUrl);
+      let audio = this.audioCache.get(audioUrl);
+      if (!audio) {
+        audio = new Audio();
+        audio.preload = 'auto';
+        audio.src = audioUrl;
+        this.audioCache.set(audioUrl, audio);
+      } else {
+        try {
+          audio.pause();
+          audio.currentTime = 0;
+        } catch {}
+      }
+
       this.currentAudio = audio;
       this.notifySpeaking(true, lang, spokenText);
 
@@ -147,7 +183,8 @@ class SoundController {
 
       const playPromise = audio.play();
       if (playPromise !== undefined) {
-        playPromise.catch(() => {
+        playPromise.catch((err) => {
+          console.warn('Audio play error, falling back:', err);
           if (this.currentAudio === audio) {
             this.currentAudio = null;
           }
@@ -160,15 +197,22 @@ class SoundController {
     }
   }
 
-  // Dynamic TTS streaming fallback for custom CAD models
+  // Dynamic TTS streaming fallback for custom CAD models (Zero delay on production)
   fallbackSpeak(textToSpeak, lang, stepObj) {
-    // Attempt Vite proxy TTS stream
-    const ttsUrl = `/api/tts?ie=UTF-8&tl=${lang}&client=tw-ob&q=${encodeURIComponent(textToSpeak)}`;
-    
-    this.playVoiceAudioFile(ttsUrl, textToSpeak, lang, () => {
-      // If streaming fails (offline or blocked), fallback to Web Speech Synthesis
+    const isLocal = typeof window !== 'undefined' && 
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+    if (isLocal) {
+      // In local dev with Vite dev server, proxy handles /api/tts
+      const ttsUrl = `/api/tts?ie=UTF-8&tl=${lang}&client=tw-ob&q=${encodeURIComponent(textToSpeak)}`;
+      this.playVoiceAudioFile(ttsUrl, textToSpeak, lang, () => {
+        this.synthesizeSpeech(textToSpeak, lang, stepObj);
+      });
+    } else {
+      // In production static hosting (Render), /api/tts is not available.
+      // Go directly to browser Web Speech Synthesis instantly!
       this.synthesizeSpeech(textToSpeak, lang, stepObj);
-    });
+    }
   }
 
   // Browser Web Speech Synthesis fallback
