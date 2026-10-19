@@ -31,45 +31,92 @@ export function applyPBRMaterials(obj) {
       child.castShadow = true;
       child.receiveShadow = true;
 
-      // 1. Caliper Mounting Anchor Bracket (Cast Ductile Iron)
-      if (name.includes('bracket')) {
+      // 0. Brembo Raised White Racing Emblem
+      if (name.includes('emblem') || name.includes('branding')) {
         child.material = new THREE.MeshStandardMaterial({
-          color: 0x475569, // Heavy Cast Ductile Iron Mounting Bracket
-          metalness: 0.78,
-          roughness: 0.32,
-          name: 'bracketMat'
+          color: 0xffffff,
+          metalness: 0.1,
+          roughness: 0.2,
+          emissive: new THREE.Color(0xffffff),
+          emissiveIntensity: 0.35,
+          name: 'bremboBadgeMat'
         });
       }
-      // 2. Ceramic Brake Pads (Sintered High-Friction Matrix)
-      else if (name.includes('pad')) {
+      // 1. Cross-drilled ventilation holes and slotted racing grooves (High-contrast deep carbon)
+      else if (name.includes('crossdrilled') || name.includes('slotted') || name.includes('groove')) {
         child.material = new THREE.MeshStandardMaterial({
-          color: 0x334155, // Sintered High-Friction Ceramic Matrix
-          metalness: 0.40,
-          roughness: 0.65,
-          name: 'padMat'
+          color: 0x151921, // Deep contrasting carbon steel chamfer
+          metalness: 0.88,
+          roughness: 0.38,
+          name: 'drilledGrooveMat'
         });
       }
-      // 3. Caliper Body & Hydraulic Cylinders (High-Gloss Brembo Racing Red)
+      // 2. Floating Bobbins & Hardware Fasteners
+      else if (name.includes('bobbin') || name.includes('hardware')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0xe2e8f0, // Polished Stainless Steel Bobbins
+          metalness: 0.95,
+          roughness: 0.12,
+          name: 'bobbinMat'
+        });
+      }
+      // 3. Chrome Hydraulic Pistons
+      else if (name.includes('piston')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0xf8fafc, // Mirror Polished Chrome Pistons
+          metalness: 0.98,
+          roughness: 0.06,
+          name: 'pistonMat'
+        });
+      }
+      // 4. Anodized Bell Hat (Gunmetal Titanium)
+      else if (name.includes('hat') || name.includes('bell')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0x1e2430, // Gunmetal Anodized Aluminum Bell
+          metalness: 0.76,
+          roughness: 0.28,
+          name: 'hatMat'
+        });
+      }
+      // 5. ABS Tone Ring & Active Sensor
+      else if (name.includes('abs') || name.includes('tone') || name.includes('sensor')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0x334155,
+          metalness: 0.82,
+          roughness: 0.28,
+          name: 'absSensorMat'
+        });
+      }
+      // 6. Stainless Anti-Rattle Shims & Spring Clips
+      else if (name.includes('shim') || name.includes('spring') || name.includes('clip')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0xcfd8dc, // Silver Spring Steel
+          metalness: 0.92,
+          roughness: 0.16,
+          name: 'shimClipMat'
+        });
+      }
+      // 7. Caliper Body (Brembo Corsa Racing Red with High-Gloss Clearcoat)
       else if (name.includes('caliper') || name.includes('cylinder') || name.includes('red')) {
         child.material = new THREE.MeshPhysicalMaterial({
-          color: 0xc8102e, // Authentic Brembo Corsa Racing Red
-          metalness: 0.22,
-          roughness: 0.16,
-          clearcoat: 0.9,
-          clearcoatRoughness: 0.08,
+          color: 0xd91424, // Authentic Brembo Corsa Racing Red
+          metalness: 0.18,
+          roughness: 0.14,
+          clearcoat: 1.0,
+          clearcoatRoughness: 0.05,
           name: 'caliperMat'
         });
       }
-      // 2. Rotor friction disc and radial cooling vanes (Bright Machined Steel)
+      // 8. 320mm Ventilated Friction Rings (Bright Machined Steel)
       else if (name.includes('rotor') || name.includes('disc') || name.includes('vanes')) {
         child.material = new THREE.MeshStandardMaterial({
-          color: 0xdde3ea, // Bright Machined Alloy Steel
-          metalness: 0.82,
-          roughness: 0.20,
+          color: 0xd8dde4, // High-Carbon Lathe-Turned Alloy Steel
+          metalness: 0.88,
+          roughness: 0.22,
           name: 'rotorMat'
         });
       }
-      // 3. Wheel Hub and spindle (Precision Forged Steel)
+      // 9. Wheel Hub and Spindle (Forged Steel)
       else if (name.includes('hub') || name.includes('spindle')) {
         child.material = new THREE.MeshStandardMaterial({
           color: 0x94a3b8, // Forged Heavy Alloy Steel
@@ -78,13 +125,31 @@ export function applyPBRMaterials(obj) {
           name: 'hubMat'
         });
       }
-      // 4. Guide pin fastener bolts and wheel studs (Mirror Chrome)
-      else if (name.includes('bolt') || name.includes('stud') || name.includes('fastener') || name.includes('pin')) {
+      // 10. Bolts, Studs & Chrome Lug Nuts
+      else if (name.includes('bolt') || name.includes('stud') || name.includes('fastener') || name.includes('pin') || name.includes('nut')) {
         child.material = new THREE.MeshStandardMaterial({
-          color: 0xffffff, // Mirror Chrome Fasteners
+          color: 0xffffff, // Mirror Chrome Fasteners & Lug Nuts
           metalness: 0.98,
           roughness: 0.05,
           name: 'boltMat'
+        });
+      }
+      // 11. Caliper Mounting Anchor Bracket (Cast Ductile Iron)
+      else if (name.includes('bracket')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0x334155, // Cast Ductile Iron Mounting Bracket
+          metalness: 0.78,
+          roughness: 0.35,
+          name: 'bracketMat'
+        });
+      }
+      // 12. Ceramic Brake Pads
+      else if (name.includes('pad')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0x475569, // Sintered High-Friction Ceramic Matrix
+          metalness: 0.40,
+          roughness: 0.65,
+          name: 'padMat'
         });
       }
       // 5. Clutch: Engine Flywheel (Ground Ductile Cast Iron)

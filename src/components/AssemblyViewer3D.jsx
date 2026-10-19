@@ -53,6 +53,17 @@ export default function AssemblyViewer3D({
   const defectAngleOffsetRef = useRef(defectAngleOffset);
   defectAngleOffsetRef.current = defectAngleOffset;
 
+  const explodedPercentRef = useRef(explodedPercent);
+  explodedPercentRef.current = explodedPercent;
+
+  const currentStepRef = useRef(currentStep);
+  currentStepRef.current = currentStep;
+
+  const stepTransitionTimeRef = useRef(performance.now());
+  useEffect(() => {
+    stepTransitionTimeRef.current = performance.now();
+  }, [currentStep]);
+
   useEffect(() => {
     const container = mountRef.current;
     if (!container) return;
@@ -795,6 +806,48 @@ export default function AssemblyViewer3D({
         }
       }
 
+      // Real-Time Kinematic Fly-in Assembly & Dyno Rotor Spin Animations
+      if (customModelGroupRef.current) {
+        const now = performance.now();
+        const stepElapsed = (now - (stepTransitionTimeRef.current || now)) / 1000.0;
+        const flyDuration = 0.65; // 650ms smooth fly-in
+        const flyProgress = Math.min(1.0, Math.max(0.0, stepElapsed / flyDuration));
+        const easeFly = 1.0 - Math.pow(1.0 - flyProgress, 3);
+        const flyFactor = (1.0 - easeFly);
+        const activeStep = currentStepRef.current || 1;
+        const explodeFactor = (explodedPercentRef.current || 0) / 100;
+        const isSpinning = Boolean(isAutoRotateRef.current);
+
+        customModelGroupRef.current.traverse(child => {
+          if (child.isMesh && child.userData.initialPos) {
+            const partStep = child.userData.computedStep || 1;
+            const isTarget = partStep === activeStep;
+            const compDir = child.userData.compDir || new THREE.Vector3(0, 0, 0);
+
+            if (explodeFactor >= 0.01) {
+              child.position.copy(child.userData.initialPos).addScaledVector(compDir, explodeFactor);
+            } else if (isTarget && flyFactor > 0.001) {
+              // Smooth kinematic insertion trajectory from disassembly axis
+              child.position.copy(child.userData.initialPos).addScaledVector(compDir, flyFactor * 1.4);
+              const n = (child.name || '').toLowerCase();
+              if (n.includes('bolt') || n.includes('stud') || n.includes('pin')) {
+                child.rotation.z = (child.userData.initialRotZ || 0) + (flyFactor * Math.PI * 4);
+              }
+            } else {
+              child.position.copy(child.userData.initialPos);
+            }
+
+            // Realistic Dyno Rotor Spin when 360 Spin is active
+            if (isSpinning && explodeFactor < 0.01) {
+              const n = (child.name || '').toLowerCase();
+              if (n.includes('rotor') || n.includes('disc') || n.includes('vanes') || n.includes('hub') || n.includes('stud') || n.includes('hat') || n.includes('bell') || n.includes('crossdrilled') || n.includes('slotted') || n.includes('bobbin') || n.includes('nut')) {
+                child.rotation.z += 0.02;
+              }
+            }
+          }
+        });
+      }
+
       renderer.render(scene, camera);
     };
 
@@ -1103,12 +1156,15 @@ export default function AssemblyViewer3D({
           if (!child.userData.explodeDir) {
             // Disc Brake mappings (Radial & axial disassembly vectors)
             if (name.includes('hub') || name.includes('spindle')) explodeDir.set(0, 0, 0);
-            else if (name.includes('rotor') || name.includes('vanes')) explodeDir.set(0, 0, 1.8);
-            else if (name.includes('hat') || name.includes('stud')) explodeDir.set(0, 0, 2.6);
+            else if (name.includes('stud') || name.includes('circlip') || name.includes('nut')) explodeDir.set(0, 0, 1.2);
+            else if (name.includes('abs') || name.includes('tone') || name.includes('sensor')) explodeDir.set(-1.0, 0.8, -0.2);
+            else if (name.includes('rotor') || name.includes('vanes') || name.includes('disc') || name.includes('hat') || name.includes('bell') || name.includes('crossdrilled') || name.includes('slotted') || name.includes('bobbin')) explodeDir.set(0, 0, 2.2);
             else if (name.includes('bracket')) explodeDir.set(0.4, 1.2, 0.4);
-            else if (name.includes('pad')) explodeDir.set(0.4, 1.5, 2.0);
-            else if (name.includes('caliper')) explodeDir.set(0.8, 2.0, 0.8);
-            else if (name.includes('bolt') || name.includes('guide')) explodeDir.set(1.2, 2.8, 1.2);
+            else if (name.includes('shim') || name.includes('clip') || name.includes('spring')) explodeDir.set(0.4, 1.5, 1.6);
+            else if (name.includes('pad')) explodeDir.set(0.4, 1.6, 2.4);
+            else if (name.includes('caliper') || name.includes('housing') || name.includes('piston') || name.includes('emblem')) explodeDir.set(0.8, 2.2, 1.0);
+            else if (name.includes('bolt') || name.includes('guide')) explodeDir.set(1.2, 2.8, 1.8);
+            else if (name.includes('bleeder') || name.includes('banjo')) explodeDir.set(0.8, 2.6, 0.6);
             // Clutch Assembly mappings (Axial transmission explosion)
             else if (name.includes('flywheel')) explodeDir.set(0, 0, -1.8);
             else if (name.includes('friction') || name.includes('damper')) explodeDir.set(0, 0, -0.6);
@@ -1140,6 +1196,7 @@ export default function AssemblyViewer3D({
           // Scale compensation: ensures visible, dramatic exploded view regardless of CAD import units
           const modelScale = (customModel && customModel.scale && customModel.scale.x > 0) ? customModel.scale.x : 1;
           const compensatedDir = explodeDir.clone().divideScalar(modelScale);
+          child.userData.compDir = compensatedDir;
           child.position.copy(child.userData.initialPos).addScaledVector(compensatedDir, explodeFactor);
         }
 
@@ -1165,15 +1222,16 @@ export default function AssemblyViewer3D({
             else if (name.includes('wheel') || name.includes('tire') || name.includes('alloy') || name.includes('forged') || name.includes('rolling')) partStep = 12;
           } else if (isBrake) {
             if (name.includes('hub') || name.includes('spindle')) partStep = 1;
-            else if (name.includes('stud') || name.includes('hat')) partStep = 2;
-            else if (name.includes('abs') || name.includes('sensor')) partStep = 3;
-            else if (name.includes('rotor') || name.includes('vanes')) partStep = 4;
+            else if (name.includes('stud') || name.includes('circlip') || name.includes('nut')) partStep = 2;
+            else if (name.includes('abs') || name.includes('tone') || name.includes('sensor')) partStep = 3;
+            else if (name.includes('rotor') || name.includes('vanes') || name.includes('disc') || name.includes('hat') || name.includes('bell') || name.includes('crossdrilled') || name.includes('slotted') || name.includes('bobbin')) partStep = 4;
             else if (name.includes('bracket')) partStep = 5;
-            else if (name.includes('clip') || name.includes('shim')) partStep = 6;
+            else if (name.includes('clip') || name.includes('shim') || name.includes('spring')) partStep = 6;
             else if (name.includes('pad')) partStep = 7;
-            else if (name.includes('caliper')) partStep = 8;
-            else if (name.includes('bolt') || name.includes('guide') || name.includes('banjo')) partStep = 9;
-            else partStep = 10;
+            else if (name.includes('caliper') || name.includes('housing') || name.includes('piston') || name.includes('emblem') || name.includes('branding')) partStep = 8;
+            else if (name.includes('bolt') || name.includes('guide')) partStep = 9;
+            else if (name.includes('bleeder') || name.includes('banjo') || name.includes('pipe') || name.includes('valve')) partStep = 10;
+            else partStep = 4;
           } else if (isClutch) {
             if (name.includes('flywheel') || name.includes('pilot')) partStep = 1;
             else if (name.includes('bolt') && name.includes('crank')) partStep = 3;
@@ -1194,6 +1252,8 @@ export default function AssemblyViewer3D({
             else partStep = 6;
           }
         }
+
+        child.userData.computedStep = partStep;
 
         const isFullyAssembledView = showAllParts || explodeFactor >= 0.05;
         const isPartAssembled = partStep < currentStep;
@@ -1230,13 +1290,13 @@ export default function AssemblyViewer3D({
           }
           child.material.transparent = false;
           child.material.wireframe = false;
-          // Distinctive electric cyan highlight glow so the user clearly sees what is being assembled
+          // Ultra-crisp AR edge highlight glow (0.16) so realistic textures remain pristine!
           if (!isDefectSimulated) {
-            child.material.emissive = new THREE.Color(0x00d4ff);
-            child.material.emissiveIntensity = 0.45;
+            child.material.emissive = new THREE.Color(0x00f0ff);
+            child.material.emissiveIntensity = 0.16;
           } else {
             child.material.emissive = new THREE.Color(0xff0044);
-            child.material.emissiveIntensity = 0.5;
+            child.material.emissiveIntensity = 0.35;
           }
         } else if (isPartAssembled) {
           // Assembled in earlier steps: firmly in place in the assembly
