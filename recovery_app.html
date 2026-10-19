@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antigravity Data Recovery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --primary-accent: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.1), transparent 25%);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 900px;
+            height: 600px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #3b82f6, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+        }
+
+        .sidebar {
+            width: 250px;
+            border-right: 1px solid var(--glass-border);
+            padding: 24px;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary-accent);
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .icon-large {
+            font-size: 64px;
+            margin-bottom: 24px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            line-height: 1.5;
+            max-width: 400px;
+        }
+
+        .btn {
+            background: var(--primary-accent);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 20px -3px rgba(59, 130, 246, 0.4);
+        }
+
+        .progress-container {
+            display: none;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-accent), var(--success));
+            border-radius: 4px;
+            transition: width 0.1s linear;
+        }
+
+        .scan-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        #fileList {
+            display: none;
+            width: 100%;
+            margin-top: 20px;
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 20px;
+        }
+
+        .file-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo">⚡ AntiRecovery</div>
+            <div style="color: var(--text-muted); font-size: 14px;">v1.0.0 Pro</div>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="nav-item active">🔍 Deep Scan</div>
+                <div class="nav-item">📁 Recovered Files</div>
+                <div class="nav-item">⚙️ Settings</div>
+                <div class="nav-item">ℹ️ Help & Support</div>
+            </div>
+
+            <div class="content-area" id="mainState">
+                <div class="icon-large">💽</div>
+                <h2>Ready to Recover</h2>
+                <p>Select a drive or disk image to begin deep file carving. We scan raw sectors for lost signatures.</p>
+                <button class="btn" id="startBtn" onclick="startScan()">Select Drive & Scan</button>
+                
+                <div class="progress-container" id="progressState">
+                    <h3 style="margin-bottom: 20px;" id="scanStatusText">Scanning PhysicalDrive0...</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="pFill"></div>
+                    </div>
+                    <div class="scan-stats">
+                        <span id="percentText">0%</span>
+                        <span id="filesFoundText">Files Found: 0</span>
+                    </div>
+                </div>
+
+                <div id="fileList">
+                    <!-- Files will populate here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function startScan() {
+            const btn = document.getElementById('startBtn');
+            const progress = document.getElementById('progressState');
+            const fill = document.getElementById('pFill');
+            const percentTxt = document.getElementById('percentText');
+            const filesTxt = document.getElementById('filesFoundText');
+            const fileList = document.getElementById('fileList');
+            const statusTxt = document.getElementById('scanStatusText');
+            
+            btn.style.display = 'none';
+            document.querySelector('.icon-large').style.display = 'none';
+            document.querySelector('h2').style.display = 'none';
+            document.querySelector('p').style.display = 'none';
+            
+            progress.style.display = 'block';
+            fileList.style.display = 'block';
+            
+            let currentPercent = 0;
+            
+            // Start the actual Python backend scan process!
+            fetch('/api/scan', { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    clearInterval(interval);
+                    fill.style.width = '100%';
+                    percentTxt.innerText = '100%';
+                    
+                    statusTxt.innerText = "Scan Complete!";
+                    statusTxt.style.color = "var(--success)";
+                    filesTxt.innerText = "Files Found: " + data.files_found;
+                    
+                    data.files.forEach(file => {
+                        const el = document.createElement('div');
+                        el.className = 'file-item';
+                        el.innerHTML = `<span><a href="/Recovered_Photos/${file}" target="_blank" style="color:var(--text-main); text-decoration:underline;">${file}</a></span> <span style="color:var(--success)">100% Recovered</span>`;
+                        fileList.prepend(el);
+                    });
+                })
+                .catch(err => {
+                    clearInterval(interval);
+                    statusTxt.innerText = "Scan Error";
+                    statusTxt.style.color = "red";
+                });
+
+            // Fake progress bar while the python script runs in the background
+            const interval = setInterval(() => {
+                if(currentPercent < 95) {
+                    currentPercent += (Math.random() * 5);
+                    fill.style.width = currentPercent + '%';
+                    percentTxt.innerText = Math.floor(currentPercent) + '%';
+                }
+            }, 300);
+        }
+    </script>
+</body>
+</html>
