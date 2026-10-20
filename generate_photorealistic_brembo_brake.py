@@ -176,34 +176,19 @@ def build_brembo_disc_brake_cad():
         add_cylinder(bx, by, 0.53, 0.065, 0.03, segs=12, axis='Z')
 
     start_object("Ventilated_Brake_Rotor_Vanes")
-    # Front friction disc track (r=1.06 to r=1.94, thickness 0.08, centered at z=0.50)
-    add_annular_disc(0, 0, 0.50, 1.06, 1.94, 0.08, segs=48)
-    # Rear friction disc track (r=1.06 to r=1.94, thickness 0.08, centered at z=0.26)
-    add_annular_disc(0, 0, 0.26, 1.06, 1.94, 0.08, segs=48)
-    # 24 Internal Curved Directional Cooling Air Vanes
+    # Front precision-ground friction disc track (r=1.04 to r=1.95, thickness 0.08, centered at z=0.50)
+    add_annular_disc(0, 0, 0.50, 1.04, 1.95, 0.08, segs=64)
+    # Outer precision chamfer rim (front)
+    add_annular_disc(0, 0, 0.50, 1.93, 1.97, 0.076, segs=64)
+    # Rear friction disc track (r=1.04 to r=1.95, thickness 0.08, centered at z=0.26)
+    add_annular_disc(0, 0, 0.26, 1.04, 1.95, 0.08, segs=64)
+    # Outer precision chamfer rim (rear)
+    add_annular_disc(0, 0, 0.26, 1.93, 1.97, 0.076, segs=64)
+    # 24 Internal Curved Directional Cooling Air Vanes (visible inside vent channels)
     for i in range(24):
         a = (i * 2 * math.pi) / 24
         vr = 1.50
         add_box((math.cos(a)*vr, math.sin(a)*vr, 0.38), (0.78, 0.05, 0.16), rot_z=a + 0.35)
-
-    start_object("Rotor_CrossDrilled_and_Slotted_Grooves")
-    # 36 High-Contrast Cross-Drilled Holes in dynamic spiral rows
-    for r in [1.26, 1.48, 1.70]:
-        for i in range(12):
-            a = (i * 2 * math.pi) / 12 + (r * 1.5)
-            # Front face drilled port
-            add_cylinder(math.cos(a)*r, math.sin(a)*r, 0.542, 0.042, 0.015, segs=12, axis='Z')
-            # Rear face drilled port
-            add_cylinder(math.cos(a)*r, math.sin(a)*r, 0.218, 0.042, 0.015, segs=12, axis='Z')
-
-    # 6 Brembo Type-3 Curved Racing Slotted Grooves
-    for i in range(6):
-        a = (i * 2 * math.pi) / 6
-        for step in range(5):
-            frac = step / 4.0
-            gr_r = 1.25 + frac * 0.55
-            gr_a = a + (frac * 0.28)
-            add_box((math.cos(gr_a)*gr_r, math.sin(gr_a)*gr_r, 0.542), (0.12, 0.024, 0.012), rot_z=gr_a + 0.45)
 
     # =========================================================================
     # STEP 5: CALIPER ANCHOR MOUNTING BRACKET
