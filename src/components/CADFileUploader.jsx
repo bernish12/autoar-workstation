@@ -152,43 +152,90 @@ export function applyPBRMaterials(obj) {
           name: 'padMat'
         });
       }
-      // 5. Clutch: Engine Flywheel (Ground Ductile Cast Iron)
-      else if (name.includes('flywheel')) {
+      // 5. Clutch: Pilot Bearing & Needle Rollers
+      else if (name.includes('pilot') || name.includes('needle')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0xcfd8dc, // Hardened 100Cr6 Chromium Bearing Steel
+          metalness: 0.94,
+          roughness: 0.12,
+          name: 'pilotBearingMat'
+        });
+      }
+      // 6. Clutch: Dual-Mass Flywheel & Starter Ring
+      else if (name.includes('flywheel') || name.includes('dmf') || name.includes('ring_gear')) {
         child.material = new THREE.MeshStandardMaterial({
           color: 0x94a3b8, // Heavy Ductile Cast Iron
-          metalness: 0.80,
-          roughness: 0.28,
+          metalness: 0.82,
+          roughness: 0.26,
           name: 'flywheelMat'
         });
       }
-      // 6. Clutch: Friction Disc lining & dampening springs
+      // 7. Clutch: Crankshaft Stretch Bolts
+      else if (name.includes('crank') && name.includes('bolt')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0x1e293b, // Grade 12.9 Black Oxide High-Tensile Steel
+          metalness: 0.92,
+          roughness: 0.28,
+          name: 'crankBoltMat'
+        });
+      }
+      // 8. Clutch: Transmission Input Spline Shaft
+      else if (name.includes('spline') || name.includes('input_shaft')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0x475569, // MoS2 Micro-Dosed Hardened Spline Steel
+          metalness: 0.88,
+          roughness: 0.32,
+          name: 'splineShaftMat'
+        });
+      }
+      // 9. Clutch: Friction Disc lining & dampening springs
       else if (name.includes('friction') || name.includes('damper')) {
         child.material = new THREE.MeshStandardMaterial({
-          color: 0x475569, // High-Friction Organic Composite
+          color: 0x334155, // High-Friction Organic Composite
           metalness: 0.35,
           roughness: 0.65,
           name: 'frictionDiscMat'
         });
       }
-      // 7. Clutch: Cast Iron Pressure Plate Clamping Ring
-      else if (name.includes('pressure')) {
+      // 10. Clutch: Centering Arbor Alignment Mandrel
+      else if (name.includes('mandrel') || name.includes('arbor')) {
+        child.material = new THREE.MeshPhysicalMaterial({
+          color: 0x06b6d4, // Anodized Cobalt Cyan Tool Steel
+          metalness: 0.85,
+          roughness: 0.18,
+          clearcoat: 0.85,
+          clearcoatRoughness: 0.08,
+          name: 'mandrelMat'
+        });
+      }
+      // 11. Clutch: Cast Iron Pressure Plate Clamping Ring
+      else if (name.includes('pressure') || name.includes('clamping')) {
         child.material = new THREE.MeshStandardMaterial({
-          color: 0xcfd8dc, // Ground Flat Cast Iron Clamping Ring
+          color: 0xd1d5db, // Ground Flat Pearlitic Grey Cast Iron
           metalness: 0.85,
           roughness: 0.20,
           name: 'pressurePlateMat'
         });
       }
-      // 8. Clutch: Diaphragm Belleville Spring Fingers (Tempered Blue Spring Steel)
-      else if (name.includes('diaphragm') || name.includes('spring')) {
+      // 12. Clutch: Diaphragm Belleville Spring Fingers (Tempered Blue Spring Steel)
+      else if (name.includes('diaphragm') || (name.includes('spring') && !name.includes('damper') && !name.includes('sac'))) {
         child.material = new THREE.MeshStandardMaterial({
-          color: 0x60a5fa, // Tempered Blue Spring Steel Fingers
+          color: 0x3b82f6, // Tempered Blue Spring Steel Fingers
           metalness: 0.92,
           roughness: 0.15,
           name: 'diaphragmMat'
         });
       }
-      // 9. Clutch: Stamped Steel Cover Housing (Gold-Zinc Dichromate)
+      // 13. Clutch: SAC Adjuster Ratchet Ring
+      else if (name.includes('sac') || name.includes('ratchet')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0xf59e0b, // PA66 Glass-Filled Polyamide & Steel Ratchet
+          metalness: 0.72,
+          roughness: 0.24,
+          name: 'sacRatchetMat'
+        });
+      }
+      // 14. Clutch: Stamped Steel Cover Housing (Gold-Zinc Dichromate)
       else if (name.includes('cover') || name.includes('housing')) {
         child.material = new THREE.MeshPhysicalMaterial({
           color: 0xeab308, // Automotive Yellow-Zinc Dichromate Gold Finish
@@ -199,8 +246,8 @@ export function applyPBRMaterials(obj) {
           name: 'clutchCoverMat'
         });
       }
-      // 10. Clutch: Release Bearing (Mirror Chrome)
-      else if (name.includes('bearing')) {
+      // 15. Clutch: Release Bearing (Mirror Chrome)
+      else if (name.includes('bearing') || name.includes('release')) {
         child.material = new THREE.MeshStandardMaterial({
           color: 0xf8fafc, // Polished Chrome Bearing Steel
           metalness: 0.98,

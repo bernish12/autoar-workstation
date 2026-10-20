@@ -1213,12 +1213,16 @@ export default function AssemblyViewer3D({
             else if (name.includes('bolt') || name.includes('guide')) explodeDir.set(1.2, 2.8, 1.8);
             else if (name.includes('bleeder') || name.includes('banjo')) explodeDir.set(0.8, 2.6, 0.6);
             // Clutch Assembly mappings (Axial transmission explosion)
-            else if (name.includes('flywheel')) explodeDir.set(0, 0, -1.8);
-            else if (name.includes('friction') || name.includes('damper')) explodeDir.set(0, 0, -0.6);
-            else if (name.includes('pressure')) explodeDir.set(0, 0, 0.8);
-            else if (name.includes('diaphragm') || name.includes('spring')) explodeDir.set(0, 0, 1.8);
-            else if (name.includes('cover') || name.includes('housing')) explodeDir.set(0, 0, 2.8);
-            else if (name.includes('bearing')) explodeDir.set(0, 0, 3.8);
+            else if (name.includes('pilot') || name.includes('needle')) explodeDir.set(0, 0, -2.4);
+            else if (name.includes('flywheel') || name.includes('dmf') || name.includes('ring_gear')) explodeDir.set(0, 0, -1.6);
+            else if (name.includes('crank') || (name.includes('bolt') && !name.includes('cover') && !name.includes('flange'))) explodeDir.set(0, 0, -0.9);
+            else if (name.includes('spline') || name.includes('input_shaft')) explodeDir.set(0, 0, -0.3);
+            else if (name.includes('friction') || name.includes('damper')) explodeDir.set(0, 0, 0.4);
+            else if (name.includes('mandrel') || name.includes('arbor')) explodeDir.set(0, 0, 1.1);
+            else if (name.includes('pressure') || name.includes('clamping')) explodeDir.set(0, 0, 1.8);
+            else if (name.includes('diaphragm') || (name.includes('spring') && !name.includes('damper') && !name.includes('sac'))) explodeDir.set(0, 0, 2.5);
+            else if (name.includes('sac') || name.includes('ratchet')) explodeDir.set(0, 0, 3.2);
+            else if (name.includes('cover') || name.includes('bearing') || name.includes('release')) explodeDir.set(0, 0, 4.0);
             // Full Car 12-Station Assembly mappings (Multi-directional industrial explosion)
             else if (name.includes('chassis') || name.includes('spaceframe') || name.includes('frame') || name.includes('cage')) explodeDir.set(0, -1.2, 0); // Station 1: Chassis floorpan lowers
             else if (name.includes('wiring') || name.includes('harness')) explodeDir.set(0, -0.6, 0.4); // Station 2: Wiring loom
@@ -1280,16 +1284,17 @@ export default function AssemblyViewer3D({
             else if (name.includes('bleeder') || name.includes('banjo') || name.includes('pipe') || name.includes('valve')) partStep = 10;
             else partStep = 4;
           } else if (isClutch) {
-            if (name.includes('flywheel') || name.includes('pilot')) partStep = 1;
-            else if (name.includes('bolt') && name.includes('crank')) partStep = 3;
-            else if (name.includes('spline')) partStep = 4;
+            if (name.includes('pilot') || name.includes('needle')) partStep = 1;
+            else if (name.includes('flywheel') || name.includes('dmf') || name.includes('ring_gear')) partStep = 2;
+            else if (name.includes('crank') || (name.includes('bolt') && !name.includes('cover') && !name.includes('flange'))) partStep = 3;
+            else if (name.includes('spline') || name.includes('input_shaft')) partStep = 4;
             else if (name.includes('friction') || name.includes('damper')) partStep = 5;
             else if (name.includes('mandrel') || name.includes('arbor')) partStep = 6;
-            else if (name.includes('pressure')) partStep = 7;
-            else if (name.includes('diaphragm') || name.includes('spring')) partStep = 8;
+            else if (name.includes('pressure') || name.includes('clamping')) partStep = 7;
+            else if (name.includes('diaphragm') || (name.includes('spring') && !name.includes('damper') && !name.includes('sac'))) partStep = 8;
             else if (name.includes('sac') || name.includes('ratchet')) partStep = 9;
-            else if (name.includes('cover') || name.includes('bearing')) partStep = 10;
-            else partStep = 10;
+            else if (name.includes('cover') || name.includes('bearing') || name.includes('release')) partStep = 10;
+            else partStep = 2;
           } else {
             if (name.includes('fork')) partStep = 1;
             else if (name.includes('eye')) partStep = 2;
