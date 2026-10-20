@@ -321,6 +321,12 @@ def build_engine_cad():
 
     # Compile OBJ text
     lines.append("")
+    # Write all geometric vertices first
+    for v in verts:
+        lines.append(f"v {v[0]:.4f} {v[1]:.4f} {v[2]:.4f}")
+    lines.append("")
+
+    # Write objects, groups and faces
     obj_idx = 0
     for f_idx, face in enumerate(faces):
         while obj_idx < len(objects) and f_idx >= objects[obj_idx]['start_face']:
