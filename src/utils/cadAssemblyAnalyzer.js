@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import {
   ASSEMBLY_STEPS as BRAKE_STEPS,
   CLUTCH_ASSEMBLY_STEPS,
+  ENGINE_ASSEMBLY_STEPS,
   FULL_CAR_ASSEMBLY_STEPS,
   KNUCKLE_JOINT_STEPS
 } from '../components/assemblyData';
@@ -53,12 +54,23 @@ export function analyzeCADAssembly(model, fileName = '') {
   modelBox.getSize(modelSize);
 
   const lowerName = fileName.toLowerCase();
-  const isCar = (lowerName.includes('car') || lowerName.includes('vehicle') || lowerName.includes('bmw')) && meshes.length >= 3;
-  const isClutch = !isCar && lowerName.includes('clutch') && meshes.length >= 3;
-  const isKnuckle = !isCar && !isClutch && (lowerName.includes('knuckle') || lowerName.includes('joint')) && meshes.length >= 3;
-  const isBrake = !isCar && !isClutch && !isKnuckle && (lowerName.includes('brake') || lowerName.includes('caliper')) && meshes.length >= 3;
+  const isEngine = (lowerName.includes('engine') || lowerName.includes('s58') || lowerName.includes('b58')) && meshes.length >= 3;
+  const isCar = !isEngine && (lowerName.includes('car') || lowerName.includes('vehicle') || lowerName.includes('bmw')) && meshes.length >= 3;
+  const isClutch = !isEngine && !isCar && lowerName.includes('clutch') && meshes.length >= 3;
+  const isKnuckle = !isEngine && !isCar && !isClutch && (lowerName.includes('knuckle') || lowerName.includes('joint')) && meshes.length >= 3;
+  const isBrake = !isEngine && !isCar && !isClutch && !isKnuckle && (lowerName.includes('brake') || lowerName.includes('caliper')) && meshes.length >= 3;
 
   // High-fidelity pre-calibrated automotive modules
+  if (isEngine) {
+    return {
+      steps: ENGINE_ASSEMBLY_STEPS,
+      module: 'engine',
+      assemblyTitle: 'BMW S58 3.0L Inline-6 TwinPower Turbo Engine Core Assembly',
+      totalVertices,
+      meshesCount: meshes.length,
+      modelSize
+    };
+  }
   if (isCar) {
     return {
       steps: FULL_CAR_ASSEMBLY_STEPS,
