@@ -37,6 +37,7 @@ export default function AssemblyViewer3D({
   const clutchClampGroupRef = useRef(null);
   const carSkilletJigRef = useRef(null);
   const knuckleViseJigRef = useRef(null);
+  const engineRotisserieJigRef = useRef(null);
   const laserScanRef = useRef(null);
 
   const isAutoRotateRef = useRef(isAutoRotate);
@@ -436,6 +437,36 @@ export default function AssemblyViewer3D({
 
     fixtureGroup.add(knuckleViseJig);
     knuckleViseJigRef.current = knuckleViseJig;
+
+    // 8. Dedicated Motorized Engine Rollover Assembly Rotisserie Stand
+    const engineRotisserieJig = new THREE.Group();
+    engineRotisserieJig.name = 'engineRotisserieJig';
+    engineRotisserieJig.visible = false;
+
+    // Dual heavy vertical A-frame upright columns (Front at Z = +1.22, Rear at Z = -1.22)
+    for (const zPos of [-1.22, 1.22]) {
+      const columnGeo = new THREE.BoxGeometry(0.24, 1.15, 0.24);
+      const columnMesh = new THREE.Mesh(columnGeo, fixtureMat);
+      columnMesh.position.set(0, -0.78, zPos);
+      engineRotisserieJig.add(columnMesh);
+
+      // 360-degree rotating pivot head & clamping disc
+      const pivotHeadGeo = new THREE.CylinderGeometry(0.16, 0.16, 0.14, 24);
+      pivotHeadGeo.rotateX(Math.PI / 2);
+      const pivotHeadMesh = new THREE.Mesh(pivotHeadGeo, fixtureAccentMat);
+      pivotHeadMesh.position.set(0, -0.05, zPos);
+      engineRotisserieJig.add(pivotHeadMesh);
+
+      // 4 adjustable tubular engine block mounting arms
+      for (const [armX, armY] of [[-0.28, -0.18], [0.28, -0.18], [-0.28, 0.12], [0.28, 0.12]]) {
+        const armGeo = new THREE.BoxGeometry(0.06, 0.06, 0.16);
+        const armMesh = new THREE.Mesh(armGeo, new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.9, roughness: 0.2 }));
+        armMesh.position.set(armX, armY, zPos + (zPos < 0 ? 0.12 : -0.12));
+        engineRotisserieJig.add(armMesh);
+      }
+    }
+    fixtureGroup.add(engineRotisserieJig);
+    engineRotisserieJigRef.current = engineRotisserieJig;
 
     scene.add(fixtureGroup);
 
@@ -1171,15 +1202,17 @@ export default function AssemblyViewer3D({
       }
 
       // Dynamically display the authentic dedicated workstation stand for each module
-      const isCar = (effectiveModule === 'car') || (customModelName && customModelName.toLowerCase().includes('bmw'));
+      const isEngine = (effectiveModule === 'engine') || (customModelName && (customModelName.toLowerCase().includes('engine') || customModelName.toLowerCase().includes('s58') || customModelName.toLowerCase().includes('b58')));
+      const isCar = !isEngine && ((effectiveModule === 'car') || (customModelName && customModelName.toLowerCase().includes('bmw')));
       const isClutch = (effectiveModule === 'clutch') || (customModelName && (customModelName.toLowerCase().includes('clutch') || customModelName.toLowerCase().includes('flywheel')));
       const isKnuckle = (effectiveModule === 'knuckle') || (customModelName && (customModelName.toLowerCase().includes('knuckle') || customModelName.toLowerCase().includes('joint')));
       const isBrake = !customModel || (effectiveModule === 'brake') || (customModelName && (customModelName.toLowerCase().includes('brake') || customModelName.toLowerCase().includes('caliper')));
 
-      if (brakeClampJigRef.current) brakeClampJigRef.current.visible = isBrake && !isClutch && !isCar && !isKnuckle;
+      if (brakeClampJigRef.current) brakeClampJigRef.current.visible = isBrake && !isClutch && !isCar && !isKnuckle && !isEngine;
       if (clutchStandJigRef.current) clutchStandJigRef.current.visible = isClutch;
       if (carSkilletJigRef.current) carSkilletJigRef.current.visible = isCar;
       if (knuckleViseJigRef.current) knuckleViseJigRef.current.visible = isKnuckle;
+      if (engineRotisserieJigRef.current) engineRotisserieJigRef.current.visible = isEngine;
 
       scene.add(customModel);
       customModelGroupRef.current = customModel;
@@ -1194,6 +1227,7 @@ export default function AssemblyViewer3D({
       if (clutchStandJigRef.current) clutchStandJigRef.current.visible = false;
       if (carSkilletJigRef.current) carSkilletJigRef.current.visible = false;
       if (knuckleViseJigRef.current) knuckleViseJigRef.current.visible = false;
+      if (engineRotisserieJigRef.current) engineRotisserieJigRef.current.visible = false;
     }
   }, [customModel, effectiveModule, customModelName]);
 
@@ -1221,8 +1255,21 @@ export default function AssemblyViewer3D({
           let explodeDir = child.userData.explodeDir ? child.userData.explodeDir.clone() : new THREE.Vector3(0, 0, 0);
 
           if (!child.userData.explodeDir) {
+            // S58 3.0L Inline-6 TwinPower Turbo Engine Core mappings
+            if (name.includes('block') || name.includes('cylinder_bank')) explodeDir.set(0, 0, 0); // Station 1: Block datum
+            else if (name.includes('crankshaft')) explodeDir.set(0, -1.2, 0); // Station 2: Crank drops down
+            else if (name.includes('bedplate')) explodeDir.set(0, -1.8, 0); // Station 3: Bedplate drops down
+            else if (name.includes('rod')) explodeDir.set(0, -0.6, 0); // Station 4: Connecting rods
+            else if (name.includes('piston')) explodeDir.set(0, 1.2, 0); // Station 5: Pistons rise up
+            else if (name.includes('oil_pan') || name.includes('sump')) explodeDir.set(0, -2.6, 0); // Station 6: Oil pan drops down
+            else if (name.includes('gasket') || name.includes('mls')) explodeDir.set(0, 1.7, 0); // Station 7: MLS gasket lifts up
+            else if (name.includes('cylinder_head') || name.includes('dohc_head')) explodeDir.set(0, 2.3, 0); // Station 8: Cylinder head lifts up
+            else if (name.includes('camshaft') || name.includes('vanos')) explodeDir.set(0, 2.9, 0); // Station 9: Camshafts lift up
+            else if (name.includes('timing_chain') || name.includes('chain')) explodeDir.set(0, 1.2, 1.6); // Station 10: Timing chain slides forward
+            else if (name.includes('valve_cover') || name.includes('coils')) explodeDir.set(0, 3.6, 0); // Station 11: Valve cover lifts up
+            else if (name.includes('turbo') || name.includes('turbocharger')) explodeDir.set(-2.5, 1.2, 0); // Station 12: Turbocharger explodes outward
             // Disc Brake mappings (Radial & axial disassembly vectors)
-            if (name.includes('hub') || name.includes('spindle')) explodeDir.set(0, 0, 0);
+            else if (name.includes('hub') || name.includes('spindle')) explodeDir.set(0, 0, 0);
             else if (name.includes('stud') || name.includes('circlip') || name.includes('nut')) explodeDir.set(0, 0, 1.2);
             else if (name.includes('abs') || name.includes('tone') || name.includes('sensor')) explodeDir.set(-1.0, 0.8, -0.2);
             else if (name.includes('rotor') || name.includes('vanes') || name.includes('disc') || name.includes('hat') || name.includes('bell') || name.includes('crossdrilled') || name.includes('slotted') || name.includes('bobbin')) explodeDir.set(0, 0, 2.2);
@@ -1247,7 +1294,7 @@ export default function AssemblyViewer3D({
             else if (name.includes('chassis') || name.includes('spaceframe') || name.includes('frame') || name.includes('cage')) explodeDir.set(0, -1.2, 0); // Station 1: Chassis floorpan lowers
             else if (name.includes('wiring') || name.includes('harness')) explodeDir.set(0, -0.6, 0.4); // Station 2: Wiring loom
             else if (name.includes('cockpit') || name.includes('instrument')) explodeDir.set(0.6, 1.0, 0); // Station 3: Cockpit module lifts forward
-            else if (name.includes('powertrain') || name.includes('engine') || name.includes('trans')) explodeDir.set(0, -0.8, 0); // Station 4: Engine marriage lowers
+            else if (name.includes('powertrain') || name.includes('trans')) explodeDir.set(0, -0.8, 0); // Station 4: Engine marriage lowers
             else if (name.includes('suspension') || name.includes('subframe') || name.includes('coil') || name.includes('drivetrain')) explodeDir.set(0, -0.5, child.position.z >= 0 ? 0.6 : -0.6); // Station 5: Suspension
             else if (name.includes('exhaust') || name.includes('muffler') || name.includes('downpipe')) explodeDir.set(-0.6, -0.9, 0); // Station 6: Exhaust drops underbody
             else if (name.includes('brake') || name.includes('caliper') || name.includes('rotor')) explodeDir.set(0, 0, child.position.z >= 0 ? 1.6 : -1.6); // Station 7: Brakes explode sideways
@@ -1274,11 +1321,26 @@ export default function AssemblyViewer3D({
         // 2. Sequential Step Visibility & Holographic Ghosting
         let partStep = child.userData.stepIndex || 12;
         if (!child.userData.stepIndex) {
-          const isCar = (effectiveModule === 'car') || (customModelName && customModelName.toLowerCase().includes('bmw')) || name.includes('bmw');
+          const isEngine = (effectiveModule === 'engine') || (customModelName && (customModelName.toLowerCase().includes('engine') || customModelName.toLowerCase().includes('s58') || customModelName.toLowerCase().includes('b58')));
+          const isCar = !isEngine && ((effectiveModule === 'car') || (customModelName && customModelName.toLowerCase().includes('bmw')) || name.includes('bmw'));
           const isClutch = (effectiveModule === 'clutch') || (customModelName && (customModelName.toLowerCase().includes('clutch') || customModelName.toLowerCase().includes('flywheel')));
           const isBrake = (effectiveModule === 'brake') || (customModelName && (customModelName.toLowerCase().includes('brake') || customModelName.toLowerCase().includes('caliper')));
 
-          if (isCar) {
+          if (isEngine) {
+            if (name.includes('block') || name.includes('cylinder_bank')) partStep = 1;
+            else if (name.includes('crankshaft')) partStep = 2;
+            else if (name.includes('bedplate')) partStep = 3;
+            else if (name.includes('rod')) partStep = 4;
+            else if (name.includes('piston')) partStep = 5;
+            else if (name.includes('oil_pan') || name.includes('sump')) partStep = 6;
+            else if (name.includes('gasket') || name.includes('mls')) partStep = 7;
+            else if (name.includes('cylinder_head') || name.includes('dohc_head')) partStep = 8;
+            else if (name.includes('camshaft') || name.includes('vanos')) partStep = 9;
+            else if (name.includes('timing_chain') || name.includes('chain')) partStep = 10;
+            else if (name.includes('valve_cover') || name.includes('coils')) partStep = 11;
+            else if (name.includes('turbo') || name.includes('turbocharger')) partStep = 12;
+            else partStep = 1;
+          } else if (isCar) {
             if (name.includes('chassis') || name.includes('spaceframe') || name.includes('frame') || name.includes('cage')) partStep = 1;
             else if (name.includes('wiring') || name.includes('harness')) partStep = 2;
             else if (name.includes('cockpit') || name.includes('instrument')) partStep = 3;

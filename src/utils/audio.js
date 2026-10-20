@@ -127,18 +127,20 @@ class SoundController {
       if (!mod) {
         const code = (stepObj.partCode || '').toUpperCase();
         const key = (stepObj.partKey || '').toLowerCase();
-        if (code.includes('BRK') || code.includes('ROT') || code.includes('CAL') || code.includes('WH-') || key.includes('brake') || key.includes('hub')) {
+        if (code.includes('S58') || code.includes('ENG') || code.includes('BLK') || code.includes('CRK') || code.includes('PST') || code.includes('ROD') || code.includes('TRB') || key.includes('engine') || key.includes('crankshaft') || key.includes('bedplate') || key.includes('turbo')) {
+          mod = 'engine';
+        } else if (code.includes('BRK') || code.includes('ROT') || code.includes('CAL') || code.includes('WH-') || key.includes('brake') || key.includes('hub')) {
           mod = 'brake';
         } else if (code.includes('CLT') || code.includes('FLY') || code.includes('PRS') || code.includes('PLT') || code.includes('DMF') || key.includes('clutch') || key.includes('pilot') || key.includes('flywheel')) {
           mod = 'clutch';
-        } else if (code.includes('CAR') || code.includes('FRM') || code.includes('CHS') || code.includes('ENG') || key.includes('chassis') || key.includes('engine')) {
+        } else if (code.includes('CAR') || code.includes('FRM') || code.includes('CHS') || key.includes('chassis')) {
           mod = 'car';
         } else if (code.includes('KNK') || code.includes('STE') || code.includes('STR') || key.includes('knuckle') || key.includes('tie')) {
           mod = 'knuckle';
         }
       }
 
-      const maxSteps = mod === 'car' ? 12 : (mod === 'knuckle' ? 6 : 10);
+      const maxSteps = (mod === 'car' || mod === 'engine') ? 12 : (mod === 'knuckle' ? 6 : 10);
       if (mod && stepObj.id >= 1 && stepObj.id <= maxSteps) {
         preAudioFile = `/audio/voices/${mod}_${stepObj.id}_${lang}.mp3`;
       }

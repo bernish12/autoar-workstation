@@ -379,6 +379,107 @@ export function applyPBRMaterials(obj) {
           name: 'bmwChassisMat'
         });
       }
+      // BMW S58 TwinPower Turbo Engine Core Specific Components
+      else if (name.includes('block') || name.includes('cylinder_bank')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0x94a3b8, // Closed-Deck AlSiCu Cast Aluminum Block
+          metalness: 0.84,
+          roughness: 0.22,
+          name: 'engineBlockMat'
+        });
+      }
+      else if (name.includes('crankshaft') || name.includes('crankpin')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0xf1f5f9, // Micro-Finished Forged 42CrMo4 Steel
+          metalness: 0.96,
+          roughness: 0.08,
+          name: 'crankshaftMat'
+        });
+      }
+      else if (name.includes('bedplate')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0x64748b, // High-Rigidity Cast Aluminum Bedplate
+          metalness: 0.82,
+          roughness: 0.26,
+          name: 'bedplateMat'
+        });
+      }
+      else if (name.includes('connecting_rod') || name.includes('h_beam') || name.includes('rod')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0xcfd8dc, // Forged 4340 Chromoly Steel H-Beam
+          metalness: 0.90,
+          roughness: 0.16,
+          name: 'rodMat'
+        });
+      }
+      else if (name.includes('piston')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0xd4d4d8, // Forged 2618 Aluminum Alloy with Grafal Skirt
+          metalness: 0.88,
+          roughness: 0.14,
+          name: 'pistonMat'
+        });
+      }
+      else if (name.includes('oil_sump') || name.includes('oil_pan') || name.includes('sump')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0x475569, // Cast Aluminum Oil Pan Sump
+          metalness: 0.78,
+          roughness: 0.30,
+          name: 'oilPanMat'
+        });
+      }
+      else if (name.includes('gasket') || name.includes('mls')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0xb45309, // 5-Layer Embossed Stainless Steel with Viton Fire-Rings
+          metalness: 0.92,
+          roughness: 0.14,
+          name: 'headGasketMat'
+        });
+      }
+      else if (name.includes('cylinder_head') || name.includes('dohc_head') || (name.includes('head') && !name.includes('headlight'))) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0xa1a1aa, // CNC Ported Aluminum Cylinder Head
+          metalness: 0.84,
+          roughness: 0.22,
+          name: 'cylinderHeadMat'
+        });
+      }
+      else if (name.includes('camshaft') || name.includes('vanos') || name.includes('cam')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0xf8fafc, // Induction-Hardened Steel Camshaft & VANOS Sprockets
+          metalness: 0.96,
+          roughness: 0.08,
+          name: 'camshaftMat'
+        });
+      }
+      else if (name.includes('timing_chain') || name.includes('chain')) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0x94a3b8, // Hardened Alloy Steel Duplex Roller Chain
+          metalness: 0.94,
+          roughness: 0.10,
+          name: 'timingChainMat'
+        });
+      }
+      else if (name.includes('valve_cover') || name.includes('coils')) {
+        child.material = new THREE.MeshPhysicalMaterial({
+          color: 0x18181b, // Ultralight Die-Cast Magnesium with M-Power Carbon Shield
+          metalness: 0.80,
+          roughness: 0.24,
+          clearcoat: 0.60,
+          clearcoatRoughness: 0.12,
+          name: 'valveCoverMat'
+        });
+      }
+      else if (name.includes('turbo') || name.includes('turbocharger') || name.includes('turbine')) {
+        child.material = new THREE.MeshPhysicalMaterial({
+          color: 0xd97706, // Inconel Heat-Resistant Turbine Housing & Billet Compressor
+          metalness: 0.94,
+          roughness: 0.12,
+          clearcoat: 0.85,
+          clearcoatRoughness: 0.08,
+          name: 'turboMat'
+        });
+      }
       // BMW S58 / S63 M TwinPower Turbo Engine & Drivetrain
       else if (name.includes('powertrain') || name.includes('engine') || name.includes('trans')) {
         child.material = new THREE.MeshStandardMaterial({
@@ -699,7 +800,30 @@ export default function CADFileUploader({ onModelLoaded }) {
             <span>LOAD DRAWN CLUTCH ASSEMBLY (.OBJ)</span>
           </button>
 
-          {/* Direct 1-Click Load for Full Car Assembly */}
+          {/* Direct 1-Click Load for BMW S58 Engine Assembly */}
+          <button
+            style={{
+              flex: '1 1 240px',
+              background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+              color: '#ffffff',
+              padding: '12px 16px',
+              borderRadius: '8px',
+              fontWeight: '800',
+              fontSize: '12px',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              boxShadow: '0 4px 14px rgba(245, 158, 11, 0.4)'
+            }}
+            onClick={() => loadPredefinedModel('/models/BMW_S58_TwinPower_Turbo_Engine_Core.obj', 'BMW_S58_TwinPower_Turbo_Engine_Core.obj')}
+            disabled={loading}
+          >
+            <span style={{ fontSize: '16px' }}>⚡</span>
+            <span>LOAD BMW S58 3.0L TURBO ENGINE CORE (.OBJ)</span>
+          </button>
           <button
             style={{
               flex: '1 1 240px',

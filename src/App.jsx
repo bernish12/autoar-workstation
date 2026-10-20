@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ASSEMBLY_STEPS, CLUTCH_ASSEMBLY_STEPS, FULL_CAR_ASSEMBLY_STEPS, KNUCKLE_JOINT_STEPS, COMPONENT_MODULES } from './components/assemblyData';
+import { ASSEMBLY_STEPS, CLUTCH_ASSEMBLY_STEPS, ENGINE_ASSEMBLY_STEPS, FULL_CAR_ASSEMBLY_STEPS, KNUCKLE_JOINT_STEPS, COMPONENT_MODULES } from './components/assemblyData';
 import AssemblyViewer3D from './components/AssemblyViewer3D';
 import AROverlayHUD from './components/AROverlayHUD';
 import TorqueWrenchSimulator from './components/TorqueWrenchSimulator';
@@ -64,7 +64,8 @@ export default function App() {
   const detectModule = (name) => {
     if (!name) return selectedModule;
     const lower = name.toLowerCase();
-    if (lower.includes('car') || lower.includes('vehicle') || lower.includes('bmw')) return 'car';
+    if (lower.includes('engine') || lower.includes('s58') || lower.includes('b58') || lower.includes('turbo_engine')) return 'engine';
+    if (lower.includes('car') || lower.includes('vehicle') || (lower.includes('bmw') && !lower.includes('engine'))) return 'car';
     if (lower.includes('clutch')) return 'clutch';
     if (lower.includes('knuckle') || lower.includes('joint')) return 'knuckle';
     if (lower.includes('brake') || lower.includes('rotor') || lower.includes('caliper')) return 'brake';
@@ -86,9 +87,11 @@ export default function App() {
     customModel ? (
       effectiveModule === 'car'
         ? FULL_CAR_ASSEMBLY_STEPS
-        : (effectiveModule === 'clutch'
-          ? CLUTCH_ASSEMBLY_STEPS
-          : (effectiveModule === 'knuckle' ? KNUCKLE_JOINT_STEPS : ASSEMBLY_STEPS))
+        : (effectiveModule === 'engine'
+          ? ENGINE_ASSEMBLY_STEPS
+          : (effectiveModule === 'clutch'
+            ? CLUTCH_ASSEMBLY_STEPS
+            : (effectiveModule === 'knuckle' ? KNUCKLE_JOINT_STEPS : ASSEMBLY_STEPS)))
     ) : []
   );
   const currentStep = stepsList[currentStepIndex] || stepsList[0] || null;
@@ -225,11 +228,13 @@ export default function App() {
     if (playSound) soundFx.playClick();
     const fileName = moduleId === 'car'
       ? 'BMW_M_Series_Complete_Body_Assembly.obj'
-      : (moduleId === 'clutch'
-        ? 'Automotive_Clutch_and_Pressure_Plate_Assembly.obj'
-        : (moduleId === 'knuckle'
-          ? 'Knuckle_Joint_Assembly.obj'
-          : 'Automotive_Ventilated_Disc_Brake_and_Caliper_Assembly.obj'));
+      : (moduleId === 'engine'
+        ? 'BMW_S58_TwinPower_Turbo_Engine_Core.obj'
+        : (moduleId === 'clutch'
+          ? 'Automotive_Clutch_and_Pressure_Plate_Assembly.obj'
+          : (moduleId === 'knuckle'
+            ? 'Knuckle_Joint_Assembly.obj'
+            : 'Automotive_Ventilated_Disc_Brake_and_Caliper_Assembly.obj')));
     const fileUrl = `/models/${fileName}`;
 
     try {
@@ -657,6 +662,13 @@ export default function App() {
               title="Load Automotive Clutch System"
             >
               ⚙️ Clutch
+            </button>
+            <button
+              className={`btn-cad-pill ${effectiveModule === 'engine' ? 'active' : ''}`}
+              onClick={() => handleLoadSpecificCAD('engine')}
+              title="Load BMW S58 TwinPower Turbo 3.0L Inline-6 Engine Core"
+            >
+              ⚡ Engine
             </button>
             <button
               className={`btn-cad-pill ${effectiveModule === 'knuckle' ? 'active' : ''}`}

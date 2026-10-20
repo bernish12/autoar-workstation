@@ -1790,6 +1790,623 @@ export const KNUCKLE_JOINT_STEPS = [
   }
 ];
 
+// BMW S58 TwinPower Turbo 3.0L Inline-6 DOHC High-Performance Engine Core Assembly Data
+// Industry 4.0 Standard Work Instructions (SWI) - BMW M Division Powertrain Plant Munich
+export const ENGINE_ASSEMBLY_STEPS = [
+  {
+    id: 1,
+    partKey: 'engine_block',
+    partName: 'Station 01: Closed-Deck Aluminum Engine Block & Main Journal Bearings',
+    partCode: 'S58-BLK-01',
+    category: 'Powertrain Line - Engine Core Cell',
+    material: 'High-Strength AlSiCu Alloy with Wire-Arc LDS Coated Cylinder Bores',
+    tool: 'Laser Bore Profilometer & Ultrasonic Wash Tank',
+    targetTorque: 0,
+    requiresTorque: false,
+    tolerance: 'Bore Diameter 84.0 mm ±0.005 mm',
+    title: 'Closed-Deck Engine Block Alignment & Main Bearing Shell Seating',
+    instruction: 'Load the S58 closed-deck engine block onto the build rotisserie. Install 7 tri-layer lower main bearing shells with assembly lubricant. Scan bore roundness with laser CMM (< 0.005 mm).',
+    voiceScript: 'Station 1: Load the S58 closed-deck engine block onto the build rotisserie. Install 7 tri-layer lower main bearing shells with assembly lubricant.',
+    translations: {
+      en: 'Station 1: Load the S58 closed-deck engine block onto the build rotisserie. Install 7 tri-layer lower main bearing shells with assembly lubricant.',
+      ta: 'படி 1: S58 க்ளோஸ்டு-டெக் என்ஜின் பிளாக்கை அசெம்பிளி ஸ்டாண்டில் ஏற்றவும். 7 மெயின் பேரிங் ஷெல்களை லுப்ரிகண்ட் பூசி பொருத்தவும்.',
+      ml: 'ഘട്ടം 1: എഞ്ചിൻ ബ്ലോക്ക് സ്റ്റാൻഡിൽ ഘടിപ്പിച്ച് മെയിൻ ബെയറിംഗുകൾ വെയ്ക്കുക.',
+      hi: 'चरण 1: एस58 क्लोज्ड-डेक इंजन ब्लॉक को माउंट करें और 7 मुख्य बेयरिंग लगाएं।'
+    },
+    tip: 'Ensure LDS wire-arc coated bore crosshatch hone angle is 45° for optimal oil retention.',
+    colorTag: '#00f0ff',
+    telemetry: {
+      stationCode: 'BMW-ENG-01',
+      robotType: 'KUKA Titan Heavy Handling Robot',
+      toolBrand: 'Keyence Optical CMM + Kistler Servo',
+      cycleTime: '35s Takt',
+      laserRunout: 'Bore Roundness: 0.003 mm [PASS]',
+      heliumDecay: 'N/A',
+      torqueCurve: [0, 0, 0, 0]
+    },
+    specs: [
+      { label: 'Engine Architecture', value: '3.0L Inline-6 TwinPower Turbo (S58)' },
+      { label: 'Cylinder Bore', value: '84.0 mm (LDS Wire-Arc Coated)' },
+      { label: 'Block Construction', value: 'Closed-Deck Deep Skirt Aluminum' },
+      { label: 'Main Bearing Count', value: '7 Hardened Journal Saddles' }
+    ],
+    defectConfig: {
+      defectName: 'Cylinder Bore LDS Roundness Defect',
+      defectType: 'Cylinder Bore Out-of-Round',
+      paramName: 'Bore Roundness',
+      nominal: 0.005,
+      defectInitial: 0.045,
+      tolerance: 0.010,
+      unit: 'mm',
+      minVal: 0.0,
+      maxVal: 0.06,
+      stepSize: 0.002,
+      instruction: 'Re-hone cylinder bore wire-arc coating to restore circularity under 0.010 mm.'
+    }
+  },
+  {
+    id: 2,
+    partKey: 'crankshaft',
+    partName: 'Station 02: Forged 42CrMo4 Counterweighted Crankshaft Installation',
+    partCode: 'S58-CRK-02',
+    category: 'Cranktrain Dynamics Cell',
+    material: 'Micro-Finished Forged 42CrMo4 Steel with Induction-Hardened Fillets',
+    tool: 'Overhead Soft-Grip Crane & Mitutoyo Dial Thrust Gauge',
+    targetTorque: 0,
+    requiresTorque: false,
+    tolerance: 'End-Float Thrust Clearance 0.08 - 0.16 mm',
+    title: 'Crankshaft Lowering & Axial Thrust Bearing Measurement',
+    instruction: 'Carefully lower the forged steel crankshaft onto the 7 main journals. Verify crankshaft end-float axial clearance is within 0.08 to 0.16 mm using magnetic dial indicator.',
+    voiceScript: 'Station 2: Carefully lower the forged steel crankshaft onto the main journals. Verify crankshaft end-float axial clearance is within 0.16 millimeters.',
+    translations: {
+      en: 'Station 2: Carefully lower the forged steel crankshaft onto the main journals. Verify crankshaft end-float axial clearance is within 0.16 millimeters.',
+      ta: 'படி 2: ஃபோர்ஜ்டு ஸ்டீல் கிரான்க்ஷாஃப்ட்டை மெயின் ஜர்னல்களில் இறக்கவும். ஆக்சியல் எண்ட்-ஃப்ளோட் இடைவெளி 0.16 மிமீக்குள் இருப்பதை உறுதிசெய்யவும்.',
+      ml: 'ഘട്ടം 2: ക്രാങ്ക് ഷാഫ്റ്റ് ജേർണലുകളിൽ കൃത്യമായി ഘടിപ്പിക്കുക.',
+      hi: 'चरण 2: जालीदार स्टील क्रैंकशाफ्ट लगाएं और एंड-फ्लोट क्लीयरेंस 0.16 मिमी जांचें।'
+    },
+    tip: 'Coat crankshaft journals with synthetic assembly paste; never rotate dry bearings.',
+    colorTag: '#38bdf8',
+    telemetry: {
+      stationCode: 'BMW-ENG-02',
+      robotType: 'ABB IRB 6700 Crane Robot',
+      toolBrand: 'Mitutoyo 543 Digital Dial Gauge',
+      cycleTime: '28s Takt',
+      laserRunout: 'End-Float: 0.11 mm [PASS]',
+      heliumDecay: 'N/A',
+      torqueCurve: [0, 0, 0, 0]
+    },
+    specs: [
+      { label: 'Crankshaft Material', value: '42CrMo4 Forged High-Carbon Steel' },
+      { label: 'Crankpin Throw Spacing', value: '120° (Perfect 6-Cylinder Balance)' },
+      { label: 'Thrust Clearance', value: '0.08 - 0.16 mm Specification' },
+      { label: 'Main Journal Diameter', value: '56.0 mm Ground' }
+    ],
+    defectConfig: {
+      defectName: 'Crankshaft Axial Thrust Clearance Error',
+      defectType: 'Axial End-Float Disparity',
+      paramName: 'End-Float',
+      nominal: 0.11,
+      defectInitial: 0.38,
+      tolerance: 0.05,
+      unit: 'mm',
+      minVal: 0.05,
+      maxVal: 0.45,
+      stepSize: 0.01,
+      instruction: 'Fit oversized axial thrust bearing washers to restore 0.11 mm end-float.'
+    }
+  },
+  {
+    id: 3,
+    partKey: 'bedplate',
+    partName: 'Station 03: Main Bearing Bedplate Ladder Frame & 14x Stretch Bolts',
+    partCode: 'S58-BED-03',
+    category: 'Cranktrain Clamping & Structural Cell',
+    material: 'Cast Aluminum Structural Ladder Frame & Grade 12.9 Fasteners',
+    tool: 'Atlas Copco Multi-Spindle DC Electric Nutrunner',
+    targetTorque: 25,
+    requiresTorque: true,
+    tolerance: 'Torque 25 Nm + 70° Angle',
+    title: 'Structural Lower Bedplate Clamping & Torque-to-Yield Angle Protocol',
+    instruction: 'Position structural ladder bedplate. Fasten all 14 main bearing cap stretch bolts to 25 Nm in center-outward sequence, then apply final 70° angle torque stage.',
+    voiceScript: 'Station 3: Position the structural ladder bedplate. Fasten all 14 main bearing cap stretch bolts to 25 Newton-meters plus 70 degrees.',
+    translations: {
+      en: 'Station 3: Position the structural ladder bedplate. Fasten all 14 main bearing cap stretch bolts to 25 Newton-meters plus 70 degrees.',
+      ta: 'படி 3: லேடர் பெட்பிளேட்டை வைத்து, 14 மெயின் கேப் போல்ட்களையும் 25 நியூட்டன் மீட்டர் மற்றும் 70 டிகிரி ஆங்கிளில் இறுக்கவும்.',
+      ml: 'ഘട്ടം 3: ബെഡ്‌പ്ലേറ്റ് ഉറപ്പിച്ച് 14 ബോൾട്ടുകൾ 25 ന്യൂട്ടൺ മീറ്ററിൽ മുറുക്കുക.',
+      hi: 'चरण 3: बेडप्लेट लगाएं और सभी 14 मुख्य कैप बोल्ट को 25 न्यूटन मीटर और 70 डिग्री पर कसें।'
+    },
+    tip: 'Electronic DC nutrunner logs yield angle curve into MES to prevent bolt over-stretch.',
+    colorTag: '#60a5fa',
+    telemetry: {
+      stationCode: 'BMW-ENG-03',
+      robotType: 'Atlas Copco 14-Spindle Synchronous Cell',
+      toolBrand: 'Atlas Copco Tensor Revo DC',
+      cycleTime: '22s Takt',
+      laserRunout: 'Bolt Stretch: 0.22 mm [PASS]',
+      heliumDecay: 'N/A',
+      torqueCurve: [0, 10, 20, 25]
+    },
+    specs: [
+      { label: 'Fastener Grade', value: 'Grade 12.9 High-Tensile Stretch Bolt' },
+      { label: 'Torque Protocol', value: '25 Nm + 70° Yield Rotation' },
+      { label: 'Main Cap Count', value: '7 Integral Cross-Bolted Webs' },
+      { label: 'Bedplate Material', value: 'Cast A380 High-Rigidity Aluminum' }
+    ],
+    defectConfig: {
+      defectName: 'Bedplate Main Bolt Preload Disparity',
+      defectType: 'Stretch Bolt Insufficient Angle',
+      paramName: 'Tightening Angle',
+      nominal: 70.0,
+      defectInitial: 38.0,
+      tolerance: 5.0,
+      unit: '°',
+      minVal: 30.0,
+      maxVal: 80.0,
+      stepSize: 2.0,
+      instruction: 'Complete secondary 70.0° angle torque to achieve design bolt stretch.'
+    }
+  },
+  {
+    id: 4,
+    partKey: 'connecting_rods',
+    partName: 'Station 04: 6x Forged 4340 H-Beam Connecting Rods & ARP Bolts',
+    partCode: 'S58-ROD-04',
+    category: 'Reciprocating Powertrain Cell',
+    material: 'Forged 4340 Chromoly Steel H-Beam with Fractured Split Caps',
+    tool: 'ARP Stretch Gauge & Digital Angle Torque Wrench',
+    targetTorque: 45,
+    requiresTorque: true,
+    tolerance: 'Rod Bolt Stretch 0.14 - 0.16 mm',
+    title: 'H-Beam Connecting Rod Installation & ARP Rod Bolt Stretch',
+    instruction: 'Assemble forged H-beam connecting rods onto crankshaft rod pins. Torque ARP 2000 bolts to 45 Nm and verify bolt stretch using micrometer gauge (0.14 - 0.16 mm).',
+    voiceScript: 'Station 4: Assemble the forged H-beam connecting rods onto the crank pins. Torque rod bolts to 45 Newton-meters and verify bolt stretch.',
+    translations: {
+      en: 'Station 4: Assemble the forged H-beam connecting rods onto the crank pins. Torque rod bolts to 45 Newton-meters and verify bolt stretch.',
+      ta: 'படி 4: ஃபோர்ஜ்டு ஹெச்-பீம் கனெக்டிங் ராடுகளை கிரான்க் பின்களில் பொருத்தி, போல்ட்களை 45 நியூட்டன் மீட்டரில் இறுக்கவும்.',
+      ml: 'ഘട്ടം 4: കണക്റ്റിംഗ് റോഡുകൾ 45 ന്യൂട്ടൺ മീറ്ററിൽ മുറുക്കുക.',
+      hi: 'चरण 4: एच-बीम कनेक्टिंग रॉड लगाएं और 45 न्यूटन मीटर पर कसें।'
+    },
+    tip: 'Fractured split rod caps must mate with micro-interlocking surfaces; never reverse caps.',
+    colorTag: '#818cf8',
+    telemetry: {
+      stationCode: 'BMW-ENG-04',
+      robotType: 'Staubli TX2-90 Precision Assembly',
+      toolBrand: 'Desoutter Delta DC + ARP Stretch Micrometer',
+      cycleTime: '32s Takt',
+      laserRunout: 'Bolt Stretch: 0.152 mm [PASS]',
+      heliumDecay: 'N/A',
+      torqueCurve: [0, 15, 30, 45]
+    },
+    specs: [
+      { label: 'Rod Geometry', value: 'H-Beam High-RPM Lightweight Forging' },
+      { label: 'Fastener Spec', value: 'ARP 2000 3/8" Aircraft Fasteners' },
+      { label: 'Small End Bushing', value: 'Ampco 45 High-Load Bronze' },
+      { label: 'Target Bolt Stretch', value: '0.15 mm (±0.01 mm)' }
+    ],
+    defectConfig: {
+      defectName: 'Connecting Rod Cap Alignment Shift',
+      defectType: 'Fractured Cap Joint Misalignment',
+      paramName: 'Joint Gap',
+      nominal: 0.0,
+      defectInitial: 0.08,
+      tolerance: 0.01,
+      unit: 'mm',
+      minVal: 0.0,
+      maxVal: 0.10,
+      stepSize: 0.005,
+      instruction: 'Re-seat cracked-cap interlocking teeth flush before final torquing.'
+    }
+  },
+  {
+    id: 5,
+    partKey: 'pistons',
+    partName: 'Station 05: 6x Forged Aluminum Pistons & 3-Piece Ring Packs',
+    partCode: 'S58-PST-05',
+    category: 'Combustion Chamber Assembly Cell',
+    material: 'Forged Aluminum Alloy with Grafal Anti-Friction Skirt Coating',
+    tool: 'Tapered Billet Piston Ring Compressor & Brass Drift Mallet',
+    targetTorque: 0,
+    requiresTorque: false,
+    tolerance: 'Piston Ring End-Gap 0.28 - 0.35 mm',
+    title: 'Piston Ring Staggering & Smooth Cylinder Bore Insertion',
+    instruction: 'Stagger the 3 piston ring end-gaps at 120-degree intervals. Use tapered ring compressor to guide pistons into cylinders 1 through 6. Push wrist pins through rod small ends.',
+    voiceScript: 'Station 5: Stagger the 3 piston ring end-gaps at 120-degree intervals. Use the tapered ring compressor to guide pistons into cylinders 1 through 6.',
+    translations: {
+      en: 'Station 5: Stagger the 3 piston ring end-gaps at 120-degree intervals. Use the tapered ring compressor to guide pistons into cylinders 1 through 6.',
+      ta: 'படி 5: பிஸ்டன் ரிங் இடைவெளிகளை 120 டிகிரியில் ஒழுங்குபடுத்தி, பிஸ்டன்களை சிலிண்டர் துளைகளில் தட்டவும்.',
+      ml: 'ഘട്ടം 5: പിസ്റ്റൺ റിംഗ് കംപ്രസർ ഉപയോഗിച്ച് പിസ്റ്റണുകൾ സിലിണ്ടറിലേക്ക് ഘടിപ്പിക്കുക.',
+      hi: 'चरण 5: पिस्टन रिंग्स को 120 डिग्री पर सेट करें और पिस्टन को सिलेंडरों में डालें।'
+    },
+    tip: 'Ensure piston crown arrow points toward timing chain at front (+Z) of engine block.',
+    colorTag: '#a78bfa',
+    telemetry: {
+      stationCode: 'BMW-ENG-05',
+      robotType: 'FANUC M-10iD Piston Insertion Cell',
+      toolBrand: 'Wiseco Billet 84mm Tapered Guide',
+      cycleTime: '30s Takt',
+      laserRunout: 'Ring Gap: 0.31 mm [PASS]',
+      heliumDecay: 'N/A',
+      torqueCurve: [0, 0, 0, 0]
+    },
+    specs: [
+      { label: 'Piston Manufacturing', value: 'Forged 2618 High-Silicon Alloy' },
+      { label: 'Skirt Coating', value: 'Grafal Low-Friction Graphite' },
+      { label: 'Wrist Pin Architecture', value: 'Full-Floating DLC Coated' },
+      { label: 'Compression Ratio', value: '9.3:1 Turbo Optimized' }
+    ],
+    defectConfig: {
+      defectName: 'Piston Ring End-Gap Clearance Disparity',
+      defectType: 'Insufficient Top Ring Gap',
+      paramName: 'Ring End-Gap',
+      nominal: 0.30,
+      defectInitial: 0.12,
+      tolerance: 0.05,
+      unit: 'mm',
+      minVal: 0.10,
+      maxVal: 0.45,
+      stepSize: 0.02,
+      instruction: 'File top compression ring end-gap to achieve 0.30 mm thermal clearance.'
+    }
+  },
+  {
+    id: 6,
+    partKey: 'oil_pan',
+    partName: 'Station 06: Structural Aluminum Oil Sump Pan & Windage Baffle',
+    partCode: 'S58-OIL-06',
+    category: 'Lubrication & Lower Sealing Cell',
+    material: 'Die-Cast Aluminum with Integrated Baffle & Rubber Gasket',
+    tool: 'Loctite Automated RTV Silicone Dispenser & Cordless Nutrunner',
+    targetTorque: 12,
+    requiresTorque: true,
+    tolerance: 'Torque 12 Nm Cross-Pattern',
+    title: 'Oil Sump Pan Sealing & Track Windage Tray Installation',
+    instruction: 'Mount oil pickup strainer and install aluminum oil pan. Fasten 22 perimeter bolts to 12 Nm in cross pattern. Torque magnetic drain plug to 25 Nm.',
+    voiceScript: 'Station 6: Mount the oil pickup strainer and install the aluminum oil pan. Fasten 22 perimeter bolts to 12 Newton-meters in a cross pattern.',
+    translations: {
+      en: 'Station 6: Mount the oil pickup strainer and install the aluminum oil pan. Fasten 22 perimeter bolts to 12 Newton-meters in a cross pattern.',
+      ta: 'படி 6: ஆயில் பிக்கப் டியூபை பொருத்தி, ஆயில் பானை 22 போல்ட்களுடன் 12 நியூட்டன் மீட்டரில் இறுக்கவும்.',
+      ml: 'ഘട്ടം 6: ഓയിൽ പാൻ 12 ന്യൂട്ടൺ മീറ്ററിൽ ഘടിപ്പിക്കുക.',
+      hi: 'चरण 6: ऑयल पैन लगाएं और 22 बोल्ट को 12 न्यूटन मीटर पर कसें।'
+    },
+    tip: 'Anti-surge baffle baffles prevent oil pump starvation during high lateral G-force cornering.',
+    colorTag: '#c084fc',
+    telemetry: {
+      stationCode: 'BMW-ENG-06',
+      robotType: 'Staubli TS2-60 Dispenser Robot',
+      toolBrand: 'Loctite 5970 RTV Robot + Atlas Copco',
+      cycleTime: '24s Takt',
+      laserRunout: 'Gasket Bead: 1.8 mm [PASS]',
+      heliumDecay: '0.00 mbar/s [HERMETIC]',
+      torqueCurve: [0, 4, 8, 12]
+    },
+    specs: [
+      { label: 'Oil Capacity', value: '6.5 Liters (0W-30 Synthetic)' },
+      { label: 'Sump Design', value: 'Deep Rear Track Baffled Sump' },
+      { label: 'Perimeter Bolts', value: '22x M6 Grade 8.8 (12 Nm)' },
+      { label: 'Drain Plug', value: 'Magnetic Neodymium M12' }
+    ],
+    defectConfig: {
+      defectName: 'Oil Pan Gasket Flange Bead Defect',
+      defectType: 'Silicone Sealant Bead Discontinuity',
+      paramName: 'Bead Width',
+      nominal: 2.0,
+      defectInitial: 0.6,
+      tolerance: 0.4,
+      unit: 'mm',
+      minVal: 0.4,
+      maxVal: 3.0,
+      stepSize: 0.2,
+      instruction: 'Dispense continuous 2.0 mm silicone bead along oil pan perimeter sealing face.'
+    }
+  },
+  {
+    id: 7,
+    partKey: 'head_gasket',
+    partName: 'Station 07: Multi-Layer Steel (MLS) Cylinder Head Gasket',
+    partCode: 'S58-GSK-07',
+    category: 'High-Pressure Combustion Sealing Cell',
+    material: '5-Layer Embossed Stainless Steel with Viton Micro-Seal Coating',
+    tool: 'Optical Datum Pin Aligners & Cleanroom Handling Gloves',
+    targetTorque: 0,
+    requiresTorque: false,
+    tolerance: 'Dowel Pin Fit Class H7/h6',
+    title: 'MLS Head Gasket Alignment over Hardened Precision Dowels',
+    instruction: 'Align 5-layer Multi-Layer Steel head gasket over cylinder block locating dowels. Verify combustion fire-rings are perfectly concentric with cylinder bores.',
+    voiceScript: 'Station 7: Align the 5-layer Multi-Layer Steel head gasket over the cylinder block locating dowels. Verify combustion fire-rings are perfectly concentric.',
+    translations: {
+      en: 'Station 7: Align the 5-layer Multi-Layer Steel head gasket over the cylinder block locating dowels. Verify combustion fire-rings are perfectly concentric.',
+      ta: 'படி 7: 5-அடுக்கு MLS ஹெட் கேஸ்கெட்டை டோவல் பின்கள் மீது சீராக பொருத்தவும்.',
+      ml: 'ഘട്ടം 7: മൾട്ടി-ലെയർ സ്റ്റീൽ ഹെഡ് ഗാസ്കറ്റ് ഡോവൽ പിന്നുകളിൽ കൃത്യമായി വെയ്ക്കുക.',
+      hi: 'चरण 7: 5-परत वाले एमएलएस हेड गास्केट को डॉवेल पिन पर संरेखित करें।'
+    },
+    tip: 'Never touch MLS gasket sealing beads with bare hands; oils cause combustion gas micro-leaks.',
+    colorTag: '#e879f9',
+    telemetry: {
+      stationCode: 'BMW-ENG-07',
+      robotType: 'Staubli TX2-60 Vacuum Handler',
+      toolBrand: 'Keyence Optical Vision Inspector',
+      cycleTime: '16s Takt',
+      laserRunout: 'Dowel Concentricity: 0.012 mm [PASS]',
+      heliumDecay: 'N/A',
+      torqueCurve: [0, 0, 0, 0]
+    },
+    specs: [
+      { label: 'Gasket Technology', value: '5-Layer Spring Stainless Steel (MLS)' },
+      { label: 'Compressed Thickness', value: '0.85 mm Precision' },
+      { label: 'Coating', value: 'High-Temperature Viton Elastomer' },
+      { label: 'Combustion Sealing', value: 'Laser-Welded Stopper Layer' }
+    ],
+    defectConfig: {
+      defectName: 'Head Gasket Combustion Ring Offset',
+      defectType: 'Fire-Ring Bore Eccentricity',
+      paramName: 'Bore Offset',
+      nominal: 0.0,
+      defectInitial: 0.42,
+      tolerance: 0.05,
+      unit: 'mm',
+      minVal: 0.0,
+      maxVal: 0.50,
+      stepSize: 0.02,
+      instruction: 'Re-seat MLS gasket over alignment dowels to ensure 0.0 mm bore concentricity.'
+    }
+  },
+  {
+    id: 8,
+    partKey: 'cylinder_head',
+    partName: 'Station 08: High-Flow DOHC 24-Valve Cylinder Head & 14x Studs',
+    partCode: 'S58-HED-08',
+    category: 'Cylinder Head & Valve Cell',
+    material: 'Cast Aluminum Monoblock with CNC Machined Combustion Chambers',
+    tool: 'Automatic Multi-Stage Angle Torque Controller',
+    targetTorque: 40,
+    requiresTorque: true,
+    tolerance: 'Torque 40 Nm + 90° + 90°',
+    title: 'Cylinder Head Monoblock Docking & Multi-Stage Torque Protocol',
+    instruction: 'Dock 24-valve aluminum cylinder head. Fasten 14 head studs to 40 Nm, then apply two 90-degree angle stages from center outward in spiral sequence.',
+    voiceScript: 'Station 8: Dock the 24-valve aluminum cylinder head. Fasten 14 head studs to 40 Newton-meters, then apply two 90-degree angle stages from center outward.',
+    translations: {
+      en: 'Station 8: Dock the 24-valve aluminum cylinder head. Fasten 14 head studs to 40 Newton-meters, then apply two 90-degree angle stages from center outward.',
+      ta: 'படி 8: 24-வால்வ் சிலிண்டர் ஹெட்டை பொருத்தி, 14 ஹெட் ஸ்டட்களை 40 நியூட்டன் மீட்டரிலும் தொடர்ந்து இரண்டு 90 டிகிரி ஆங்கிளிலும் இறுக்கவும்.',
+      ml: 'ഘട്ടം 8: സിലിണ്ടർ ഹെഡ് 40 ന്യൂട്ടൺ മീറ്ററിലും തുടർന്ന് രണ്ട് 90 ഡിഗ്രി ആംഗിളിലും മുറുക്കുക.',
+      hi: 'चरण 8: 24-वाल्व सिलेंडर हेड लगाएं। 14 हेड स्टड को 40 न्यूटन मीटर और दो 90 डिग्री चरणों में कसें।'
+    },
+    tip: 'Spiral torquing order from center to edges prevents warping of the precision machined deck face.',
+    colorTag: '#f472b6',
+    telemetry: {
+      stationCode: 'BMW-ENG-08',
+      robotType: 'ABB IRB 4600 Robot Gantry',
+      toolBrand: 'Atlas Copco Multi-Nutrunner Head Station',
+      cycleTime: '38s Takt',
+      laserRunout: 'Deck Flatness: 0.015 mm [PASS]',
+      heliumDecay: 'N/A',
+      torqueCurve: [0, 15, 30, 40]
+    },
+    specs: [
+      { label: 'Cylinder Head Casting', value: 'AlSi10Mg Gravity Die Cast' },
+      { label: 'Valve Configuration', value: '4 Valves Per Cylinder (24V Total)' },
+      { label: 'Head Stud Fasteners', value: '14x High-Tensile M10 Torx' },
+      { label: 'Tightening Protocol', value: '40 Nm + 90° + 90° Angle' }
+    ],
+    defectConfig: {
+      defectName: 'Cylinder Head Deck Warpage Defect',
+      defectType: 'Deck Face Planar Distortion',
+      paramName: 'Deck Flatness',
+      nominal: 0.02,
+      defectInitial: 0.15,
+      tolerance: 0.03,
+      unit: 'mm',
+      minVal: 0.0,
+      maxVal: 0.20,
+      stepSize: 0.01,
+      instruction: 'Loosen and re-torque head studs in strict center-outward spiral sequence.'
+    }
+  },
+  {
+    id: 9,
+    partKey: 'camshafts',
+    partName: 'Station 09: Dual Overhead Camshafts (DOHC) & Double-VANOS Phasers',
+    partCode: 'S58-CAM-09',
+    category: 'Valvetrain Timing Control Cell',
+    material: 'Assembled Hollow Camshafts with Induction-Hardened Steel Lobes',
+    tool: 'Cam Timing Alignment Fixture & Torque Screwdriver',
+    targetTorque: 10,
+    requiresTorque: true,
+    tolerance: 'Cam Journal Oil Clearance 0.035 - 0.055 mm',
+    title: 'DOHC Camshaft Journals Seating & Double-VANOS Phaser Alignment',
+    instruction: 'Seat intake and exhaust camshafts in matching numbered bearing caps. Torque caps to 10 Nm and lock VANOS variable phasers with precision alignment tool.',
+    voiceScript: 'Station 9: Seat intake and exhaust camshafts in matching numbered bearing caps. Torque caps to 10 Newton-meters and lock VANOS variable phasers.',
+    translations: {
+      en: 'Station 9: Seat intake and exhaust camshafts in matching numbered bearing caps. Torque caps to 10 Newton-meters and lock VANOS variable phasers.',
+      ta: 'படி 9: இன்டேக் மற்றும் எக்ஸ்ஹாஸ்ட் கேம்ஷாஃப்ட்களை பொருத்தி, கேப்ஸ்களை 10 நியூட்டன் மீட்டரில் இறுக்கி வானோஸ் ஸ்ப்ராக்கெட்களை லாக் செய்யவும்.',
+      ml: 'ഘട്ടം 9: കാംഷാഫ്റ്റുകൾ ഘടിപ്പിച്ച് 10 ന്യൂട്ടൺ മീറ്ററിൽ മുറുക്കുക.',
+      hi: 'चरण 9: इनटेक और एग्जॉस्ट कैमशाफ्ट लगाएं और कैप्स को 10 न्यूटन मीटर पर कसें।'
+    },
+    tip: 'Ensure camshaft base circles are pointed away from lifters before torquing bearing caps down.',
+    colorTag: '#fb7185',
+    telemetry: {
+      stationCode: 'BMW-ENG-09',
+      robotType: 'Staubli TX2-90 Precision Handler',
+      toolBrand: 'BMW OEM Cam Timing Alignment Jig',
+      cycleTime: '30s Takt',
+      laserRunout: 'Cam Runout: 0.008 mm [PASS]',
+      heliumDecay: 'N/A',
+      torqueCurve: [0, 4, 7, 10]
+    },
+    specs: [
+      { label: 'Cam Architecture', value: 'DOHC Double Overhead Camshafts' },
+      { label: 'Valvetrain Technology', value: 'Double-VANOS Variable Cam Timing' },
+      { label: 'Intake Valve Lift', value: '10.2 mm Maximum' },
+      { label: 'Exhaust Valve Lift', value: '9.8 mm Maximum' }
+    ],
+    defectConfig: {
+      defectName: 'Camshaft Journal Oil Clearance Defect',
+      defectType: 'Cam Bearing Clearance Too Tight',
+      paramName: 'Oil Clearance',
+      nominal: 0.045,
+      defectInitial: 0.015,
+      tolerance: 0.010,
+      unit: 'mm',
+      minVal: 0.01,
+      maxVal: 0.08,
+      stepSize: 0.005,
+      instruction: 'Fit calibrated cam cap shims to restore 0.045 mm hydrodynamic oil clearance.'
+    }
+  },
+  {
+    id: 10,
+    partKey: 'timing_chain',
+    partName: 'Station 10: Duplex Roller Timing Chain, Slipper Guides & Tensioner',
+    partCode: 'S58-TIM-10',
+    category: 'Synchronous Drive & Timing Cell',
+    material: 'Hardened Alloy Bush Roller Chain & Polyamide Low-Friction Guides',
+    tool: 'BMW Engine Timing Tool Kit & Hydraulic Pre-Tensioner Pin Puller',
+    targetTorque: 20,
+    requiresTorque: true,
+    tolerance: 'Timing Sync ±0.5 Crank Degrees',
+    title: 'Crankshaft-to-Cam Synchronous Timing Chain Installation',
+    instruction: 'Route duplex timing chain around crank and cam sprockets. Install composite guide rails and release hydraulic chain tensioner pin. Rotate crank 720° to verify sync.',
+    voiceScript: 'Station 10: Route the duplex timing chain around crank and cam sprockets. Install composite guide rails and release the hydraulic chain tensioner pin.',
+    translations: {
+      en: 'Station 10: Route the duplex timing chain around crank and cam sprockets. Install composite guide rails and release the hydraulic chain tensioner pin.',
+      ta: 'படி 10: டைமிங் செயினை ஸ்ப்ராக்கெட்களை சுற்றி பொருத்தி, கைடு ரெயில்களை அமைத்து ஹைட்ராலிக் டென்ஷனர் பின்னை விடுவிக்கவும்.',
+      ml: 'ഘട്ടം 10: ടൈമിംഗ് ചെയിനും ഗൈഡുകളും ഘടിപ്പിച്ച് ടെൻഷനർ റിലീസ് ചെയ്യുക.',
+      hi: 'चरण 10: टाइमिंग चेन लगाएं, गाइड रेल फिट करें और हाइड्रोलिक टेंशनर पिन छोड़ें।'
+    },
+    tip: 'Ensure TDC (Top Dead Center) timing pin is locked in crankshaft flywheel flange during chain setup.',
+    colorTag: '#f97316',
+    telemetry: {
+      stationCode: 'BMW-ENG-10',
+      robotType: 'FANUC LR Mate 200iD Timing Robot',
+      toolBrand: 'BMW Spec S58 Crank/Cam Lock Kit',
+      cycleTime: '34s Takt',
+      laserRunout: 'Timing Error: +0.2° [PASS]',
+      heliumDecay: 'N/A',
+      torqueCurve: [0, 8, 14, 20]
+    },
+    specs: [
+      { label: 'Chain Type', value: 'Heavy-Duty 8mm Duplex Roller Chain' },
+      { label: 'Tensioner', value: 'Hydraulic Oil-Damped Spring Loaded' },
+      { label: 'Guide Material', value: 'Glass-Fiber Reinforced Polyamide 66' },
+      { label: 'Timing Tolerance', value: '±0.5° Camshaft Phase Sync' }
+    ],
+    defectConfig: {
+      defectName: 'Cam-to-Crank Timing Phase Tooth Offset',
+      defectType: 'Timing Chain 1-Tooth Retard Error',
+      paramName: 'Timing Offset',
+      nominal: 0.0,
+      defectInitial: 7.5,
+      tolerance: 1.0,
+      unit: '°',
+      minVal: -10.0,
+      maxVal: 10.0,
+      stepSize: 1.0,
+      instruction: 'Re-align chain timing marks with laser index on VANOS cam sprockets.'
+    }
+  },
+  {
+    id: 11,
+    partKey: 'valve_cover',
+    partName: 'Station 11: Magnesium Valve Cover & 6x Direct Ignition Coil Packs',
+    partCode: 'S58-COV-11',
+    category: 'Upper Engine Dress & Ignition Cell',
+    material: 'Ultralight Die-Cast Magnesium with Carbon Fiber M-Power Shield',
+    tool: 'Cordless Micro-Torque Driver (T30 Torx)',
+    targetTorque: 9,
+    requiresTorque: true,
+    tolerance: 'Torque 9 Nm Consistent',
+    title: 'Magnesium Valve Cover Sealing & Coil-on-Plug Ignition Modules',
+    instruction: 'Install magnesium valve cover with pre-molded elastomer seal. Fasten perimeter Torx bolts to 9 Nm and insert 6 direct ignition coil packs with silicone dielectric boots.',
+    voiceScript: 'Station 11: Install the magnesium valve cover with pre-molded elastomer seal. Fasten perimeter Torx bolts to 9 Newton-meters and insert 6 ignition coils.',
+    translations: {
+      en: 'Station 11: Install the magnesium valve cover with pre-molded elastomer seal. Fasten perimeter Torx bolts to 9 Newton-meters and insert 6 ignition coils.',
+      ta: 'படி 11: மெக்னீசியம் வால்வ் கவரை பொருத்தி 9 நியூட்டன் மீட்டரில் இறுக்கவும். 6 இக்னிஷன் காயில்களை செருகவும்.',
+      ml: 'ഘട്ടം 11: വാൽവ് കവർ 9 ന്യൂട്ടൺ മീറ്ററിൽ ഘടിപ്പിച്ച് ഇഗ്നിഷൻ കോയിലുകൾ സ്ഥാപിക്കുക.',
+      hi: 'चरण 11: मैग्नीशियम वाल्व कवर 9 न्यूटन मीटर पर लगाएं और 6 इग्निशन कॉइल्स लगाएं।'
+    },
+    tip: 'Magnesium valve cover isolates valvetrain acoustics and reduces top-end center of gravity.',
+    colorTag: '#eab308',
+    telemetry: {
+      stationCode: 'BMW-ENG-11',
+      robotType: 'Staubli TS2-80 Fastener Robot',
+      toolBrand: 'Desoutter Micro-Torque T30 Driver',
+      cycleTime: '26s Takt',
+      laserRunout: 'Coil Insertion: 24.0 mm flush [PASS]',
+      heliumDecay: '0.00 mbar/s [HERMETIC]',
+      torqueCurve: [0, 3, 6, 9]
+    },
+    specs: [
+      { label: 'Cover Construction', value: 'High-Pressure Die-Cast Magnesium' },
+      { label: 'Ignition Architecture', value: 'Direct Coil-on-Plug (COP) 6x' },
+      { label: 'PCV System', value: 'Integrated Oil Cyclone Separator' },
+      { label: 'Cover Shield', value: 'Real Pre-Preg Carbon Fiber' }
+    ],
+    defectConfig: {
+      defectName: 'Valve Cover Perimeter Seal Disparity',
+      defectType: 'Elastomer Gasket Pinching',
+      paramName: 'Gasket Compression',
+      nominal: 1.2,
+      defectInitial: 0.3,
+      tolerance: 0.2,
+      unit: 'mm',
+      minVal: 0.2,
+      maxVal: 1.8,
+      stepSize: 0.1,
+      instruction: 'Evenly tighten perimeter Torx bolts to 9 Nm to compress gasket to 1.2 mm.'
+    }
+  },
+  {
+    id: 12,
+    partKey: 'turbocharger',
+    partName: 'Station 12: Twin-Scroll Exhaust Turbocharger & Electronic Wastegate',
+    partCode: 'S58-TRB-12',
+    category: 'Forced Induction & Exhaust Cell',
+    material: 'Inconel Heat-Resistant Turbine Housing & Billet Milled Compressor',
+    tool: 'High-Temp Copper Anti-Seize Applicator & V-Band Torque Wrench',
+    targetTorque: 35,
+    requiresTorque: true,
+    tolerance: 'Turbine Shaft Radial Play < 0.04 mm',
+    title: 'Twin-Scroll Turbocharger Mounting & Electronic Wastegate Calibration',
+    instruction: 'Mount twin-scroll turbocharger onto divided exhaust manifold. Fasten Inconel studs to 35 Nm. Connect electronic wastegate actuator and oil feed/drain lines. Engine assembly certified!',
+    voiceScript: 'Station 12: Mount the twin-scroll turbocharger onto the divided exhaust manifold. Fasten Inconel studs to 35 Newton-meters and connect the electronic wastegate. Engine assembly successfully certified!',
+    translations: {
+      en: 'Station 12: Mount the twin-scroll turbocharger onto the divided exhaust manifold. Fasten Inconel studs to 35 Newton-meters and connect the electronic wastegate. Engine assembly successfully certified!',
+      ta: 'படி 12: இரட்டை-ஸ்க்ரோல் டர்போசார்ஜரை எக்ஸ்ஹாஸ்ட் மேனிஃபோல்டில் பொருத்தி, 35 நியூட்டன் மீட்டரில் இறுக்கவும். என்ஜின் அசெம்பிளி வெற்றிகரமாக முடிந்தது!',
+      ml: 'ഘട്ടം 12: ട്വിൻ-സ്ക്രോൾ ടർബോചാർജർ 35 ന്യൂട്ടൺ മീറ്ററിൽ ഘടിപ്പിക്കുക. എഞ്ചിൻ അസംബ്ലി പൂർത്തിയായി.',
+      hi: 'चरण 12: ट्विन-स्क्रॉल टर्बोचार्जर लगाएं और 35 न्यूटन मीटर पर कसें। इंजन असेंबली पूरी हुई!'
+    },
+    tip: 'Pre-prime turbocharger center bearing cartridge with 20ml fresh engine oil before first start.',
+    colorTag: '#10b981',
+    telemetry: {
+      stationCode: 'BMW-ENG-12',
+      robotType: 'KUKA KR 30-3 Heavy Handler',
+      toolBrand: 'Atlas Copco High-Temp V-Band Wrench',
+      cycleTime: '36s Takt',
+      laserRunout: 'Radial Play: 0.022 mm [PASS]',
+      heliumDecay: '0.00 mbar/s [HERMETIC]',
+      torqueCurve: [0, 12, 24, 35]
+    },
+    specs: [
+      { label: 'Turbo Technology', value: 'Mono-Scroll Divided Twin-Scroll Housing' },
+      { label: 'Turbine Wheel', value: 'Inconel 713C Superalloy' },
+      { label: 'Compressor Wheel', value: 'Billet CNC Forged Aluminum' },
+      { label: 'Wastegate Control', value: 'High-Speed Electronic Servo Motor' }
+    ],
+    defectConfig: {
+      defectName: 'Turbine Shaft Radial Free-Play Defect',
+      defectType: 'Excessive Journal Bearing Play',
+      paramName: 'Shaft Play',
+      nominal: 0.025,
+      defectInitial: 0.12,
+      tolerance: 0.02,
+      unit: 'mm',
+      minVal: 0.01,
+      maxVal: 0.15,
+      stepSize: 0.005,
+      instruction: 'Inspect CHRA ceramic bearings to eliminate shaft wobble below 0.04 mm.'
+    }
+  }
+];
+
 export const COMPONENT_MODULES = {
   brake: {
     id: 'brake',
@@ -1806,6 +2423,14 @@ export const COMPONENT_MODULES = {
     cadFileName: 'Automotive_Clutch_and_Pressure_Plate_Assembly.obj',
     cadPath: '/models/Automotive_Clutch_and_Pressure_Plate_Assembly.obj',
     steps: CLUTCH_ASSEMBLY_STEPS
+  },
+  engine: {
+    id: 'engine',
+    title: '⚡ BMW S58 TwinPower Turbo Engine Core (Powertrain Module)',
+    subTitle: '3.0L Inline-6 DOHC · Closed-Deck Block · Forged Crank · H-Beam Rods · MLS Gasket · Twin-Scroll Turbo',
+    cadFileName: 'BMW_S58_TwinPower_Turbo_Engine_Core.obj',
+    cadPath: '/models/BMW_S58_TwinPower_Turbo_Engine_Core.obj',
+    steps: ENGINE_ASSEMBLY_STEPS
   },
   car: {
     id: 'car',
@@ -1824,3 +2449,4 @@ export const COMPONENT_MODULES = {
     steps: KNUCKLE_JOINT_STEPS
   }
 };
+
