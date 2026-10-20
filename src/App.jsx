@@ -620,9 +620,9 @@ export default function App() {
         <div className="header-left">
           <div className="brand-logo">
             <span className="car-icon">🏎️</span>
-            <div>
-              <div className="brand-title">AutoAR WORKSTATION</div>
-              <div className="brand-sub">Augmented Reality Automobile Assembly Line • Industry 4.0</div>
+            <div className="brand-text">
+              <div className="brand-title">AutoAR <span className="brand-tag">4.0</span></div>
+              <div className="brand-sub">AR ASSEMBLY LINE</div>
             </div>
           </div>
         </div>
@@ -660,18 +660,15 @@ export default function App() {
             </button>
           </div>
 
-          {/* Active CAD File Indicator */}
+          {/* Active CAD File Indicator Pill */}
           {customModelName ? (
-            <div className="active-cad-chip loaded">
+            <div className="active-cad-chip loaded" title={`Loaded Model: ${customModelName}`}>
               <span className="dot pulse-green"></span>
-              <div className="chip-text-group">
-                <span className="chip-label font-mono">FILE:</span>
-                <span className="chip-filename font-mono" title={customModelName}>
-                  {customModelName.length > 20 ? customModelName.substring(0, 18) + '...' : customModelName}
-                </span>
-              </div>
+              <span className="chip-filename font-mono">
+                {customModelName.length > 16 ? customModelName.substring(0, 14) + '...' : customModelName}
+              </span>
               <button
-                className="btn-header-change-cad"
+                className="btn-header-change-cad font-mono"
                 onClick={handleUnloadCAD}
                 title="Unload current CAD model to upload your own"
               >
@@ -679,118 +676,121 @@ export default function App() {
               </button>
             </div>
           ) : (
-            <div className="active-cad-chip waiting">
+            <button
+              className="btn-header-import-direct font-mono"
+              onClick={() => {
+                soundFx.playClick();
+                mainFileInputRef.current?.click();
+              }}
+              title="Open File Explorer to load your 3D CAD model (.obj, .glb, .stl)"
+            >
               <span className="dot pulse-cyan"></span>
-              <div className="chip-text-group">
-                <span className="chip-label font-mono">STATUS:</span>
-                <span className="chip-filename font-mono" style={{ color: '#38bdf8' }}>STANDBY FOR CAD</span>
-              </div>
-            </div>
+              <span>📂 Import CAD</span>
+            </button>
           )}
         </div>
 
         <div className="header-right">
-          <div className="timer-badge">
-            <span className="timer-icon">⏱️</span>
-            <span className="timer-text font-mono">{formatCycleTime(cycleTimeSeconds)}</span>
-          </div>
-
-          <button
-            className={`btn-mode-toggle ${isARMode ? 'active-ar' : ''}`}
-            onClick={toggleARMode}
-            title="Toggle Live Camera AR Overlay"
-          >
-            {isARMode ? '📷 Camera AR' : '🏢 3D Studio'}
-          </button>
-
-          {isARMode && (
+          {/* Unified Audio, Mic & Multi-Language Suite */}
+          <div className="header-audio-suite">
             <button
-              className="btn-flip-camera"
-              onClick={flipCamera}
-              title={`Switch camera (Current: ${cameraFacingMode === 'environment' ? 'Rear Camera' : 'Selfie Camera'})`}
+              className={`btn-audio-mini ${soundEnabled ? 'active' : ''}`}
+              onClick={() => setSoundEnabled(!soundEnabled)}
+              title={soundEnabled ? 'Mute Sound FX' : 'Enable Sound FX'}
             >
-              🔄 {cameraFacingMode === 'environment' ? 'Rear Cam' : 'Front Cam'}
+              {soundEnabled ? '🔊' : '🔇'}
             </button>
-          )}
 
-          <button
-            className={`btn-icon ${soundEnabled ? 'active' : ''}`}
-            onClick={() => setSoundEnabled(!soundEnabled)}
-            title="Toggle Sound Effects"
-          >
-            {soundEnabled ? '🔊' : '🔇'}
-          </button>
-
-          <button
-            className={`btn-voice-header-pill ${isVoiceListening ? 'listening' : ''}`}
-            onClick={() => setIsVoiceListening(!isVoiceListening)}
-            title={isVoiceListening ? 'Microphone Active (Listening...)' : 'Click to Enable Hands-Free Voice Control'}
-          >
-            <span className="mic-icon">{isVoiceListening ? '🎙️' : '🎤'}</span>
-            <span>{isVoiceListening ? 'VOICE ON' : 'VOICE OFF'}</span>
-            {isVoiceListening && <span className="mic-pulse-dot"></span>}
-          </button>
-
-          <button
-            className={`btn-icon ${speechEnabled ? 'active' : ''}`}
-            onClick={() => setSpeechEnabled(!speechEnabled)}
-            title="Toggle Voice Assistant Speech"
-          >
-            {speechEnabled ? '🗣️' : '🤫'}
-          </button>
-
-          {/* 4-Language Voice Audio Selector Pill */}
-          <div className={`voice-lang-selector-group ${isVoiceSpeaking ? 'speaking-active' : ''}`} title="Select Voice Assistant Guidance Language">
-            <span className={`lang-globe-icon ${isVoiceSpeaking ? 'speaking-pulse' : ''}`}>{isVoiceSpeaking ? '🔊' : '🌐'}</span>
-            <select
-              className="voice-lang-select font-mono"
-              value={selectedVoiceLanguage}
-              onChange={(e) => {
-                const newLang = e.target.value;
-                soundFx.playClick();
-                setSelectedVoiceLanguage(newLang);
-              }}
+            <button
+              className={`btn-voice-mini ${isVoiceListening ? 'listening' : ''}`}
+              onClick={() => setIsVoiceListening(!isVoiceListening)}
+              title={isVoiceListening ? 'Voice Control Active (Listening...)' : 'Click to Enable Hands-Free Voice Control'}
             >
-              <option value="en">EN (English)</option>
-              <option value="ta">தமிழ் (Tamil)</option>
-              <option value="ml">മലയാളം (Malayalam)</option>
-              <option value="hi">हिन्दी (Hindi)</option>
-            </select>
-            {isVoiceSpeaking && (
-              <span className="voice-speaking-indicator font-mono">
-                {selectedVoiceLanguage === 'ta' ? 'வழிகாட்டல்...' :
-                 selectedVoiceLanguage === 'ml' ? 'നിർദ്ദേശം...' :
-                 selectedVoiceLanguage === 'hi' ? 'बोल रहा है...' : 'Speaking...'}
-              </span>
-            )}
+              <span className="mic-glyph">{isVoiceListening ? '🎙️' : '🎤'}</span>
+              <span className="mic-txt font-mono">{isVoiceListening ? 'LIVE' : 'MIC'}</span>
+              {isVoiceListening && <span className="mic-pulse-dot"></span>}
+            </button>
+
+            <button
+              className={`btn-audio-mini ${speechEnabled ? 'active' : ''}`}
+              onClick={() => setSpeechEnabled(!speechEnabled)}
+              title={speechEnabled ? 'Voice Guidance On' : 'Voice Guidance Muted'}
+            >
+              {speechEnabled ? '🗣️' : '🤫'}
+            </button>
+
+            <div className="suite-divider"></div>
+
+            <div className={`suite-lang-box ${isVoiceSpeaking ? 'speaking-active' : ''}`} title="Voice Assistant Guidance Language">
+              <span className="lang-icon">{isVoiceSpeaking ? '🔊' : '🌐'}</span>
+              <select
+                className="suite-lang-select font-mono"
+                value={selectedVoiceLanguage}
+                onChange={(e) => {
+                  const newLang = e.target.value;
+                  soundFx.playClick();
+                  setSelectedVoiceLanguage(newLang);
+                }}
+              >
+                <option value="en">EN</option>
+                <option value="ta">தமிழ்</option>
+                <option value="ml">മലയാളം</option>
+                <option value="hi">हिन्दी</option>
+              </select>
+            </div>
           </div>
 
+          <div className="timer-badge font-mono" title="Station Cycle Timer">
+            <span className="timer-icon">⏱️</span>
+            <span className="timer-text">{formatCycleTime(cycleTimeSeconds)}</span>
+          </div>
 
-          <button
-            className={`btn-mode-toggle ${isZenMode ? 'active-zen' : ''}`}
-            onClick={() => {
-              soundFx.playClick();
-              setIsZenMode(!isZenMode);
-            }}
-            title={isZenMode ? 'Exit Zen Mode (Show Panels)' : 'Enter Zen Mode (Full 3D CAD Focus)'}
-          >
-            {isZenMode ? '⛶ Exit Zen' : '✨ Zen View'}
-          </button>
+          <div className="header-actions-suite">
+            <button
+              className={`btn-mode-toggle ${isARMode ? 'active-ar' : ''}`}
+              onClick={toggleARMode}
+              title="Toggle Live Camera AR Overlay"
+            >
+              {isARMode ? '📷 AR Cam' : '🏢 3D Studio'}
+            </button>
 
-          <button
-            className="btn-qc-report"
-            onClick={() => setIsQCModalOpen(true)}
-          >
-            📋 QC Certificate
-          </button>
+            {isARMode && (
+              <button
+                className="btn-flip-camera"
+                onClick={flipCamera}
+                title={`Switch camera (Current: ${cameraFacingMode === 'environment' ? 'Rear Camera' : 'Selfie Camera'})`}
+              >
+                🔄 Flip
+              </button>
+            )}
 
-          <button
-            className="btn-hud-info-chip"
-            onClick={() => setIsARGuideModalOpen(true)}
-            title="Learn how PTC Vuforia, DELMIA, Tulip and Light Guide Systems work in real assembly"
-          >
-            ⚡ HOW AR WORKS
-          </button>
+            <button
+              className="btn-qc-report"
+              onClick={() => setIsQCModalOpen(true)}
+              title="View IATF 16949 / ISO 9001 Digital QC Certificate"
+            >
+              📋 QC Cert
+            </button>
+
+            <button
+              className={`btn-zen-toggle ${isZenMode ? 'active-zen' : ''}`}
+              onClick={() => {
+                soundFx.playClick();
+                setIsZenMode(!isZenMode);
+              }}
+              title={isZenMode ? 'Exit Zen Mode (Show Panels)' : 'Enter Zen Mode (Full 3D CAD Focus)'}
+            >
+              {isZenMode ? '⛶ Exit' : '✨ Zen'}
+            </button>
+
+            <button
+              className="btn-hud-info-chip"
+              onClick={() => setIsARGuideModalOpen(true)}
+              title="Learn how PTC Vuforia, DELMIA, Tulip and Light Guide Systems work in real assembly"
+            >
+              ⚡ How AR Works
+            </button>
+          </div>
         </div>
       </header>
 

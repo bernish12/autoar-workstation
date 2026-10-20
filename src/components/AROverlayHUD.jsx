@@ -213,34 +213,24 @@ export default function AROverlayHUD({
       <div className="hud-corner bottom-left"></div>
       <div className="hud-corner bottom-right"></div>
 
-      {/* Unified Industrial AR Top Master Bar */}
+      {/* Unified Industrial AR Top Master Bar - Sleek & Uncluttered Capsule */}
       <div className="hud-top-master-bar">
-        {/* Left: Projected Work Instruction (PWI) */}
-        <div className="top-pwi-group">
+        <div className="hud-master-capsule">
           <span className="pwi-pulse-dot"></span>
-          <span className="pwi-protocol-lbl font-mono">
-            📽️ LIGHT GUIDE AR • STEP {String(currentStepData?.id || 1).padStart(2, '0')}/{String(totalSteps).padStart(2, '0')}
+          <span className="pwi-step-tag font-mono">
+            STEP {String(currentStepData?.id || 1).padStart(2, '0')}/{String(totalSteps).padStart(2, '0')}
           </span>
-          <span className="pwi-part-name">{currentStepData?.partName}</span>
-          <div className="pwi-pick-pill">
+          <span className="pwi-divider">•</span>
+          <span className="pwi-part-name" title={currentStepData?.partName}>
+            {currentStepData?.partName || 'Assembly Station'}
+          </span>
+          <div className="pwi-pick-pill" title={binInfo.shelf}>
             <span className="bin-code font-mono">{binInfo.bin}</span>
-            <span className="bin-shelf">({binInfo.shelf})</span>
           </div>
-        </div>
-
-        {/* Right: Telemetry Chips */}
-        <div className="top-telemetry-group">
-          <div className="hud-chip">
-            <span className="dot pulse"></span>
-            <span className="label">AR SENSOR:</span>
-            <span className="val">{isARMode ? '1080P' : 'SYNTHETIC TWIN'}</span>
-          </div>
-          <div className="hud-chip">
-            <span className="label">CONFIDENCE:</span>
-            <span className="val text-cyan">99.8%</span>
-          </div>
-          <div className="hud-chip">
-            <span className="val text-emerald font-mono">{telemetry.fps} FPS</span>
+          <div className="hud-capsule-divider"></div>
+          <div className="hud-compact-telemetry">
+            <span className="telemetry-badge font-mono">99.8% AR</span>
+            <span className="telemetry-badge-fps font-mono">{telemetry.fps} FPS</span>
           </div>
         </div>
       </div>
