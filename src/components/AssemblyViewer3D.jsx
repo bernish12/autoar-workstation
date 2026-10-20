@@ -337,36 +337,46 @@ export default function AssemblyViewer3D({
     clutchColMesh.receiveShadow = true;
     clutchStandJig.add(clutchColMesh);
 
-    // Crankcase rear engine block simulator boss
-    const engineBossGeo = new THREE.CylinderGeometry(0.62, 0.62, 0.35, 32);
+    // Crankcase rear engine bellhousing backplate simulator
+    const engineBossGeo = new THREE.CylinderGeometry(1.36, 1.36, 0.22, 36);
     engineBossGeo.rotateX(Math.PI / 2);
-    const engineBossMesh = new THREE.Mesh(engineBossGeo, fixtureAccentMat);
-    engineBossMesh.position.set(0, 0.06, -0.48);
+    const engineBossMesh = new THREE.Mesh(engineBossGeo, fixtureMat);
+    engineBossMesh.position.set(0, 0.06, -0.50);
     clutchStandJig.add(engineBossMesh);
 
-    // Crankshaft output pilot spigot mandrel (mates into rear of flywheel)
-    const crankPilotGeo = new THREE.CylinderGeometry(0.24, 0.24, 0.45, 24);
-    crankPilotGeo.rotateX(Math.PI / 2);
-    const crankPilotMesh = new THREE.Mesh(crankPilotGeo, new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.95, roughness: 0.15 }));
-    crankPilotMesh.position.set(0, 0.06, -0.22);
-    clutchStandJig.add(crankPilotMesh);
+    // Machined Crankshaft output flange with open central pilot bore pocket
+    const crankFlangeGeo = new THREE.CylinderGeometry(0.44, 0.44, 0.12, 28);
+    crankFlangeGeo.rotateX(Math.PI / 2);
+    const crankFlangeMesh = new THREE.Mesh(crankFlangeGeo, new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.95, roughness: 0.18 }));
+    crankFlangeMesh.position.set(0, 0.06, -0.38);
+    clutchStandJig.add(crankFlangeMesh);
 
-    // 3 Radial Pneumatic Clamping Arms holding the Flywheel Rim (at 90°, 210°, 330°)
+    // Recessed Crankshaft Pilot Pocket Bore (dark cavity where pilot bearing seats flush)
+    const pilotPocketGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.14, 24);
+    pilotPocketGeo.rotateX(Math.PI / 2);
+    const pilotPocketMesh = new THREE.Mesh(pilotPocketGeo, new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.85 }));
+    pilotPocketMesh.position.set(0, 0.06, -0.37);
+    clutchStandJig.add(pilotPocketMesh);
+
+    // 3 Radial Pneumatic Clamping Arms holding the Flywheel Outer Starter Ring Gear (at 90°, 210°, 330°)
     for (const angle of [Math.PI / 2, Math.PI * 7 / 6, Math.PI * 11 / 6]) {
-      const clampRad = 1.05;
+      const clampRad = 1.28;
       const armX = Math.cos(angle) * clampRad;
       const armY = 0.06 + Math.sin(angle) * clampRad;
       
-      const armGeo = new THREE.BoxGeometry(0.12, 0.38, 0.16);
+      const armGeo = new THREE.BoxGeometry(0.12, 0.28, 0.16);
       const armMesh = new THREE.Mesh(armGeo, clampAmberMat);
-      armMesh.position.set(armX, armY, -0.32);
+      armMesh.position.set(armX, armY, -0.28);
       armMesh.rotation.z = angle - Math.PI / 2;
       clutchStandJig.add(armMesh);
 
-      // Clamp rubber contact tip
-      const tipGeo = new THREE.BoxGeometry(0.14, 0.1, 0.22);
+      // Clamp rubber contact tip securely touching outer starter ring gear at r=1.215
+      const tipGeo = new THREE.BoxGeometry(0.14, 0.08, 0.18);
       const tipMesh = new THREE.Mesh(tipGeo, new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.9 }));
-      tipMesh.position.set(armX * 0.92, 0.06 + (armY - 0.06) * 0.92, -0.22);
+      const tipX = Math.cos(angle) * 1.215;
+      const tipY = 0.06 + Math.sin(angle) * 1.215;
+      tipMesh.position.set(tipX, tipY, -0.28);
+      tipMesh.rotation.z = angle - Math.PI / 2;
       clutchStandJig.add(tipMesh);
     }
 
@@ -1213,17 +1223,17 @@ export default function AssemblyViewer3D({
             else if (name.includes('caliper') || name.includes('housing') || name.includes('piston') || name.includes('emblem')) explodeDir.set(0.8, 2.2, 1.0);
             else if (name.includes('bolt') || name.includes('guide')) explodeDir.set(1.2, 2.8, 1.8);
             else if (name.includes('bleeder') || name.includes('banjo')) explodeDir.set(0.8, 2.6, 0.6);
-            // Clutch Assembly mappings (Axial transmission explosion)
-            else if (name.includes('pilot') || name.includes('needle')) explodeDir.set(0, 0, -2.4);
-            else if (name.includes('flywheel') || name.includes('dmf') || name.includes('ring_gear')) explodeDir.set(0, 0, -1.6);
-            else if (name.includes('crank') || (name.includes('bolt') && !name.includes('cover') && !name.includes('flange'))) explodeDir.set(0, 0, -0.9);
-            else if (name.includes('spline') || name.includes('input_shaft')) explodeDir.set(0, 0, -0.3);
-            else if (name.includes('friction') || name.includes('damper')) explodeDir.set(0, 0, 0.4);
-            else if (name.includes('mandrel') || name.includes('arbor')) explodeDir.set(0, 0, 1.1);
-            else if (name.includes('pressure') || name.includes('clamping')) explodeDir.set(0, 0, 1.8);
-            else if (name.includes('diaphragm') || (name.includes('spring') && !name.includes('damper') && !name.includes('sac'))) explodeDir.set(0, 0, 2.5);
-            else if (name.includes('sac') || name.includes('ratchet')) explodeDir.set(0, 0, 3.2);
-            else if (name.includes('cover') || name.includes('bearing') || name.includes('release')) explodeDir.set(0, 0, 4.0);
+            // Clutch Assembly mappings (Axial transmission insertion & forward explosion)
+            else if (name.includes('pilot') || name.includes('needle')) explodeDir.set(0, 0, 1.4);
+            else if (name.includes('flywheel') || name.includes('dmf') || name.includes('ring_gear')) explodeDir.set(0, 0, 2.0);
+            else if (name.includes('crank') || (name.includes('bolt') && !name.includes('cover') && !name.includes('flange'))) explodeDir.set(0, 0, 2.6);
+            else if (name.includes('spline') || name.includes('input_shaft')) explodeDir.set(0, 0, 3.2);
+            else if (name.includes('friction') || name.includes('damper')) explodeDir.set(0, 0, 3.8);
+            else if (name.includes('mandrel') || name.includes('arbor')) explodeDir.set(0, 0, 4.4);
+            else if (name.includes('pressure') || name.includes('clamping')) explodeDir.set(0, 0, 5.0);
+            else if (name.includes('diaphragm') || (name.includes('spring') && !name.includes('damper') && !name.includes('sac'))) explodeDir.set(0, 0, 5.6);
+            else if (name.includes('sac') || name.includes('ratchet')) explodeDir.set(0, 0, 6.2);
+            else if (name.includes('cover') || name.includes('bearing') || name.includes('release')) explodeDir.set(0, 0, 6.8);
             // Full Car 12-Station Assembly mappings (Multi-directional industrial explosion)
             else if (name.includes('chassis') || name.includes('spaceframe') || name.includes('frame') || name.includes('cage')) explodeDir.set(0, -1.2, 0); // Station 1: Chassis floorpan lowers
             else if (name.includes('wiring') || name.includes('harness')) explodeDir.set(0, -0.6, 0.4); // Station 2: Wiring loom

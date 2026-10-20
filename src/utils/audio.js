@@ -129,7 +129,7 @@ class SoundController {
         const key = (stepObj.partKey || '').toLowerCase();
         if (code.includes('BRK') || code.includes('ROT') || code.includes('CAL') || code.includes('WH-') || key.includes('brake') || key.includes('hub')) {
           mod = 'brake';
-        } else if (code.includes('CLT') || code.includes('FLY') || code.includes('PRS') || key.includes('clutch')) {
+        } else if (code.includes('CLT') || code.includes('FLY') || code.includes('PRS') || code.includes('PLT') || code.includes('DMF') || key.includes('clutch') || key.includes('pilot') || key.includes('flywheel')) {
           mod = 'clutch';
         } else if (code.includes('CAR') || code.includes('FRM') || code.includes('CHS') || code.includes('ENG') || key.includes('chassis') || key.includes('engine')) {
           mod = 'car';
