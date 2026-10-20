@@ -267,14 +267,28 @@ export default function App() {
     soundFx.speechEnabled = speechEnabled;
   }, [soundEnabled, speechEnabled]);
 
-  // Subscribe to speech playback state
+  // Subscribe to speech playback state & unlock browser audio on first user gesture
   useEffect(() => {
     const handleSpeaking = (speaking, lang, text) => {
       setIsVoiceSpeaking(speaking);
       setSpeakingText(speaking ? text : '');
     };
     soundFx.addSpeakingListener(handleSpeaking);
-    return () => soundFx.removeSpeakingListener(handleSpeaking);
+
+    const unlockAudio = () => {
+      soundFx.initContext();
+      if ('speechSynthesis' in window && window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+    };
+    window.addEventListener('click', unlockAudio, { once: true });
+    window.addEventListener('touchstart', unlockAudio, { once: true });
+
+    return () => {
+      soundFx.removeSpeakingListener(handleSpeaking);
+      window.removeEventListener('click', unlockAudio);
+      window.removeEventListener('touchstart', unlockAudio);
+    };
   }, []);
 
 
@@ -694,9 +708,14 @@ export default function App() {
           {/* Unified Audio, Mic & Multi-Language Suite */}
           <div className="header-audio-suite">
             <button
-              className={`btn-audio-mini ${soundEnabled ? 'active' : ''}`}
-              onClick={() => setSoundEnabled(!soundEnabled)}
-              title={soundEnabled ? 'Mute Sound FX' : 'Enable Sound FX'}
+              className={`btn-audio-mini ${soundEnabled ? 'active' : 'muted'}`}
+              onClick={() => {
+                const next = !soundEnabled;
+                setSoundEnabled(next);
+                soundFx.soundEnabled = next;
+                if (next) soundFx.playSuccess();
+              }}
+              title={soundEnabled ? 'Sound Effects Active (Click to Mute)' : 'Sound Effects Muted (Click to Enable)'}
             >
               {soundEnabled ? '🔊' : '🔇'}
             </button>
@@ -712,9 +731,18 @@ export default function App() {
             </button>
 
             <button
-              className={`btn-audio-mini ${speechEnabled ? 'active' : ''}`}
-              onClick={() => setSpeechEnabled(!speechEnabled)}
-              title={speechEnabled ? 'Voice Guidance On' : 'Voice Guidance Muted'}
+              className={`btn-audio-mini ${speechEnabled ? 'active' : 'muted'}`}
+              onClick={() => {
+                const next = !speechEnabled;
+                setSpeechEnabled(next);
+                soundFx.speechEnabled = next;
+                if (next && currentStep?.voiceScript) {
+                  soundFx.speak(currentStep.voiceScript, currentStep, effectiveModule, true);
+                } else if (!next) {
+                  soundFx.stopSpeech();
+                }
+              }}
+              title={speechEnabled ? 'Voice Assistant Active (Click to Mute)' : 'Voice Assistant Muted (Click to Unmute & Speak)'}
             >
               {speechEnabled ? '🗣️' : '🤫'}
             </button>
@@ -730,6 +758,12 @@ export default function App() {
                   const newLang = e.target.value;
                   soundFx.playClick();
                   setSelectedVoiceLanguage(newLang);
+                  setSpeechEnabled(true);
+                  soundFx.speechEnabled = true;
+                  soundFx.setLanguage(newLang);
+                  if (currentStep?.voiceScript) {
+                    soundFx.speak(currentStep.voiceScript, currentStep, effectiveModule, true);
+                  }
                 }}
               >
                 <option value="en">EN</option>
@@ -1192,10 +1226,12 @@ export default function App() {
                       className={`btn-step-voice-play ${isVoiceSpeaking ? 'playing' : ''}`}
                       onClick={() => {
                         if (currentStep?.voiceScript) {
-                          soundFx.speak(currentStep.voiceScript, currentStep, effectiveModule);
+                          setSpeechEnabled(true);
+                          soundFx.speechEnabled = true;
+                          soundFx.speak(currentStep.voiceScript, currentStep, effectiveModule, true);
                         }
                       }}
-                      title="Replay step assembly voice narration"
+                      title="Play step assembly voice narration"
                     >
                       <span className="voice-btn-icon">{isVoiceSpeaking ? '🔊' : '🗣️'}</span>
                       <span className="font-mono">

@@ -76,13 +76,19 @@ class SoundController {
     if ('speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
+        if (window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
       } catch {}
     }
     this.notifySpeaking(false);
   }
 
   // Multi-Language Voice Guidance Engine (Offline Audio Packs -> Direct TTS -> SpeechSynthesis)
-  speak(text, stepObj = null, moduleKey = null) {
+  speak(text, stepObj = null, moduleKey = null, forcePlay = false) {
+    if (forcePlay) {
+      this.speechEnabled = true;
+    }
     if (!this.speechEnabled) return;
 
     // Mutex token: invalidate any pending or asynchronous audio from prior steps
@@ -240,6 +246,9 @@ class SoundController {
 
     try {
       window.speechSynthesis.cancel();
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
 
       const voices = window.speechSynthesis.getVoices() || [];
       const langCodeMap = {
