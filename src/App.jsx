@@ -1260,7 +1260,9 @@ export default function App() {
                       </span>
                     </button>
                   </div>
-                  <p className="instruction-text">{currentStep.instruction || 'Inspect component datum and align with fixture jig.'}</p>
+                  <p className="instruction-text">
+                    {(currentStep.translations && currentStep.translations[selectedVoiceLanguage]) || currentStep.instruction || 'Inspect component datum and align with fixture jig.'}
+                  </p>
 
                   <div className="assembly-tip-box">
                     <span className="tip-icon">💡</span>
