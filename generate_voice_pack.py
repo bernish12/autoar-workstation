@@ -38,6 +38,7 @@ def main():
     modules = {
         'brake': 'ASSEMBLY_STEPS',
         'clutch': 'CLUTCH_ASSEMBLY_STEPS',
+        'engine': 'ENGINE_ASSEMBLY_STEPS',
         'car': 'FULL_CAR_ASSEMBLY_STEPS',
         'knuckle': 'KNUCKLE_JOINT_STEPS'
     }

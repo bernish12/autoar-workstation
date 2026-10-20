@@ -1810,8 +1810,8 @@ export const ENGINE_ASSEMBLY_STEPS = [
     translations: {
       en: 'Station 1: Load the S58 closed-deck engine block onto the build rotisserie. Install 7 tri-layer lower main bearing shells with assembly lubricant.',
       ta: 'படி 1: S58 க்ளோஸ்டு-டெக் என்ஜின் பிளாக்கை அசெம்பிளி ஸ்டாண்டில் ஏற்றவும். 7 மெயின் பேரிங் ஷெல்களை லுப்ரிகண்ட் பூசி பொருத்தவும்.',
-      ml: 'ഘട്ടം 1: എഞ്ചിൻ ബ്ലോക്ക് സ്റ്റാൻഡിൽ ഘടിപ്പിച്ച് മെയിൻ ബെയറിംഗുകൾ വെയ്ക്കുക.',
-      hi: 'चरण 1: एस58 क्लोज्ड-डेक इंजन ब्लॉक को माउंट करें और 7 मुख्य बेयरिंग लगाएं।'
+      ml: 'ഘട്ടം 1: S58 ക്ലോസ്ഡ്-ഡെക്ക് എഞ്ചിൻ ബ്ലോക്ക് സ്റ്റാൻഡിൽ ഘടിപ്പിച്ച് 7 മെയിൻ ബെയറിംഗ് ഷെല്ലുകൾ ലൂബ്രിക്കന്റ് പുരട്ടി വെയ്ക്കുക.',
+      hi: 'चरण 1: एस58 क्लोज्ड-डेक इंजन ब्लॉक को रोटिसरी स्टैंड पर लगाएं और 7 मुख्य बेयरिंग लुब्रिकेट करके स्थापित करें।'
     },
     tip: 'Ensure LDS wire-arc coated bore crosshatch hone angle is 45° for optimal oil retention.',
     colorTag: '#00f0ff',
@@ -1861,8 +1861,8 @@ export const ENGINE_ASSEMBLY_STEPS = [
     translations: {
       en: 'Station 2: Carefully lower the forged steel crankshaft onto the main journals. Verify crankshaft end-float axial clearance is within 0.16 millimeters.',
       ta: 'படி 2: ஃபோர்ஜ்டு ஸ்டீல் கிரான்க்ஷாஃப்ட்டை மெயின் ஜர்னல்களில் இறக்கவும். ஆக்சியல் எண்ட்-ஃப்ளோட் இடைவெளி 0.16 மிமீக்குள் இருப்பதை உறுதிசெய்யவும்.',
-      ml: 'ഘട്ടം 2: ക്രാങ്ക് ഷാഫ്റ്റ് ജേർണലുകളിൽ കൃത്യമായി ഘടിപ്പിക്കുക.',
-      hi: 'चरण 2: जालीदार स्टील क्रैंकशाफ्ट लगाएं और एंड-फ्लोट क्लीयरेंस 0.16 मिमी जांचें।'
+      ml: 'ഘട്ടം 2: ഫോർജ്ഡ് സ്റ്റീൽ ക്രാങ്ക് ഷാഫ്റ്റ് മെയിൻ ജേർണലുകളിൽ ഇറക്കുക. ആക്സിയൽ എൻഡ്-ഫ്ലോട്ട് 0.16 മില്ലിമീറ്ററിൽ താഴെയാണെന്ന് ഉറപ്പാക്കുക.',
+      hi: 'चरण 2: जालीदार स्टील क्रैंकशाफ्ट को मुख्य जर्नल्स पर रखें और अक्षीय एंड-फ्लोट 0.16 मिलीमीटर के भीतर जांचें।'
     },
     tip: 'Coat crankshaft journals with synthetic assembly paste; never rotate dry bearings.',
     colorTag: '#38bdf8',
@@ -1912,8 +1912,8 @@ export const ENGINE_ASSEMBLY_STEPS = [
     translations: {
       en: 'Station 3: Position the structural ladder bedplate. Fasten all 14 main bearing cap stretch bolts to 25 Newton-meters plus 70 degrees.',
       ta: 'படி 3: லேடர் பெட்பிளேட்டை வைத்து, 14 மெயின் கேப் போல்ட்களையும் 25 நியூட்டன் மீட்டர் மற்றும் 70 டிகிரி ஆங்கிளில் இறுக்கவும்.',
-      ml: 'ഘട്ടം 3: ബെഡ്‌പ്ലേറ്റ് ഉറപ്പിച്ച് 14 ബോൾട്ടുകൾ 25 ന്യൂട്ടൺ മീറ്ററിൽ മുറുക്കുക.',
-      hi: 'चरण 3: बेडप्लेट लगाएं और सभी 14 मुख्य कैप बोल्ट को 25 न्यूटन मीटर और 70 डिग्री पर कसें।'
+      ml: 'ഘട്ടം 3: ലാഡർ ബെഡ്‌പ്ലേറ്റ് ഉറപ്പിച്ച് 14 ബോൾട്ടുകൾ 25 ന്യൂട്ടൺ മീറ്ററിലും 70 ഡിഗ്രി ആംഗിളിലും മുറുക്കുക.',
+      hi: 'चरण 3: लैडर बेडप्लेट लगाएं और सभी 14 मुख्य कैप बोल्ट को 25 न्यूटन मीटर तथा 70 डिग्री कोण पर कसें।'
     },
     tip: 'Electronic DC nutrunner logs yield angle curve into MES to prevent bolt over-stretch.',
     colorTag: '#60a5fa',
@@ -1963,8 +1963,8 @@ export const ENGINE_ASSEMBLY_STEPS = [
     translations: {
       en: 'Station 4: Assemble the forged H-beam connecting rods onto the crank pins. Torque rod bolts to 45 Newton-meters and verify bolt stretch.',
       ta: 'படி 4: ஃபோர்ஜ்டு ஹெச்-பீம் கனெக்டிங் ராடுகளை கிரான்க் பின்களில் பொருத்தி, போல்ட்களை 45 நியூட்டன் மீட்டரில் இறுக்கவும்.',
-      ml: 'ഘട്ടം 4: കണക്റ്റിംഗ് റോഡുകൾ 45 ന്യൂട്ടൺ മീറ്ററിൽ മുറുക്കുക.',
-      hi: 'चरण 4: एच-बीम कनेक्टिंग रॉड लगाएं और 45 न्यूटन मीटर पर कसें।'
+      ml: 'ഘട്ടം 4: ഫോർജ്ഡ് എച്ച്-ബീം കണക്റ്റിംഗ് റോഡുകൾ ക്രാങ്ക് പിന്നുകളിൽ ഘടിപ്പിച്ച് ബോൾട്ടുകൾ 45 ന്യൂട്ടൺ മീറ്ററിൽ മുറുക്കുക.',
+      hi: 'चरण 4: जालीदार एच-बीम कनेक्टिंग रॉड्स को क्रैंक पिन पर लगाएं और रॉड बोल्ट को 45 न्यूटन मीटर पर कसें।'
     },
     tip: 'Fractured split rod caps must mate with micro-interlocking surfaces; never reverse caps.',
     colorTag: '#818cf8',
@@ -2014,8 +2014,8 @@ export const ENGINE_ASSEMBLY_STEPS = [
     translations: {
       en: 'Station 5: Stagger the 3 piston ring end-gaps at 120-degree intervals. Use the tapered ring compressor to guide pistons into cylinders 1 through 6.',
       ta: 'படி 5: பிஸ்டன் ரிங் இடைவெளிகளை 120 டிகிரியில் ஒழுங்குபடுத்தி, பிஸ்டன்களை சிலிண்டர் துளைகளில் தட்டவும்.',
-      ml: 'ഘട്ടം 5: പിസ്റ്റൺ റിംഗ് കംപ്രസർ ഉപയോഗിച്ച് പിസ്റ്റണുകൾ സിലിണ്ടറിലേക്ക് ഘടിപ്പിക്കുക.',
-      hi: 'चरण 5: पिस्टन रिंग्स को 120 डिग्री पर सेट करें और पिस्टन को सिलेंडरों में डालें।'
+      ml: 'ഘട്ടം 5: പിസ്റ്റൺ റിംഗ് വിടവുകൾ 120 ഡിഗ്രിയിൽ ക്രമീകരിച്ച്, ടേപ്പർഡ് കംപ്രസർ ഉപയോഗിച്ച് സിലിണ്ടറുകളിലേക്ക് ഇറക്കുക.',
+      hi: 'चरण 5: पिस्टन रिंग्स को 120 डिग्री पर सेट करें और टेपर्ड कंप्रेसर से पिस्टन को सिलेंडरों में डालें।'
     },
     tip: 'Ensure piston crown arrow points toward timing chain at front (+Z) of engine block.',
     colorTag: '#a78bfa',
@@ -2065,8 +2065,8 @@ export const ENGINE_ASSEMBLY_STEPS = [
     translations: {
       en: 'Station 6: Mount the oil pickup strainer and install the aluminum oil pan. Fasten 22 perimeter bolts to 12 Newton-meters in a cross pattern.',
       ta: 'படி 6: ஆயில் பிக்கப் டியூபை பொருத்தி, ஆயில் பானை 22 போல்ட்களுடன் 12 நியூட்டன் மீட்டரில் இறுக்கவும்.',
-      ml: 'ഘട്ടം 6: ഓയിൽ പാൻ 12 ന്യൂട്ടൺ മീറ്ററിൽ ഘടിപ്പിക്കുക.',
-      hi: 'चरण 6: ऑयल पैन लगाएं और 22 बोल्ट को 12 न्यूटन मीटर पर कसें।'
+      ml: 'ഘട്ടം 6: ഓയിൽ പിക്കപ്പ് ഘടിപ്പിച്ച് അലുമിനിയം ഓയിൽ പാൻ 22 ബോൾട്ടുകൾ ഉപയോഗിച്ച് 12 ന്യൂട്ടൺ മീറ്ററിൽ മുറുക്കുക.',
+      hi: 'चरण 6: ऑयल पिकअप लगाएं और एल्यूमीनियम ऑयल पैन के 22 बोल्ट को क्रॉस पैटर्न में 12 न्यूटन मीटर पर कसें।'
     },
     tip: 'Anti-surge baffle baffles prevent oil pump starvation during high lateral G-force cornering.',
     colorTag: '#c084fc',
@@ -2116,8 +2116,8 @@ export const ENGINE_ASSEMBLY_STEPS = [
     translations: {
       en: 'Station 7: Align the 5-layer Multi-Layer Steel head gasket over the cylinder block locating dowels. Verify combustion fire-rings are perfectly concentric.',
       ta: 'படி 7: 5-அடுக்கு MLS ஹெட் கேஸ்கெட்டை டோவல் பின்கள் மீது சீராக பொருத்தவும்.',
-      ml: 'ഘട്ടം 7: മൾട്ടി-ലെയർ സ്റ്റീൽ ഹെഡ് ഗാസ്കറ്റ് ഡോവൽ പിന്നുകളിൽ കൃത്യമായി വെയ്ക്കുക.',
-      hi: 'चरण 7: 5-परत वाले एमएलएस हेड गास्केट को डॉवेल पिन पर संरेखित करें।'
+      ml: 'ഘട്ടം 7: 5-ലെയർ എംഎൽഎസ് ഹെഡ് ഗാസ്കറ്റ് ഡൗവൽ പിന്നുകളിൽ കൃത്യമായി കേന്ദ്രീകരിച്ച് വെയ്ക്കുക.',
+      hi: 'चरण 7: 5-परत वाले एमएलएस हेड गास्केट को ब्लॉक के अलाइनमेंट डॉवेल पिन पर पूरी तरह संरेखित करें।'
     },
     tip: 'Never touch MLS gasket sealing beads with bare hands; oils cause combustion gas micro-leaks.',
     colorTag: '#e879f9',
@@ -2167,8 +2167,8 @@ export const ENGINE_ASSEMBLY_STEPS = [
     translations: {
       en: 'Station 8: Dock the 24-valve aluminum cylinder head. Fasten 14 head studs to 40 Newton-meters, then apply two 90-degree angle stages from center outward.',
       ta: 'படி 8: 24-வால்வ் சிலிண்டர் ஹெட்டை பொருத்தி, 14 ஹெட் ஸ்டட்களை 40 நியூட்டன் மீட்டரிலும் தொடர்ந்து இரண்டு 90 டிகிரி ஆங்கிளிலும் இறுக்கவும்.',
-      ml: 'ഘട്ടം 8: സിലിണ്ടർ ഹെഡ് 40 ന്യൂട്ടൺ മീറ്ററിലും തുടർന്ന് രണ്ട് 90 ഡിഗ്രി ആംഗിളിലും മുറുക്കുക.',
-      hi: 'चरण 8: 24-वाल्व सिलेंडर हेड लगाएं। 14 हेड स्टड को 40 न्यूटन मीटर और दो 90 डिग्री चरणों में कसें।'
+      ml: 'ഘട്ടം 8: 24-വാൽവ് സിലിണ്ടർ ഹെഡ് 40 ന്യൂട്ടൺ മീറ്ററിലും തുടർന്ന് രണ്ട് 90 ഡിഗ്രി ഘട്ടങ്ങളിലും മുറുക്കുക.',
+      hi: 'चरण 8: 24-वाल्व सिलेंडर हेड लगाएं और 14 हेड स्टड्स को 40 न्यूटन मीटर तथा दो 90 डिग्री चरणों में कसें।'
     },
     tip: 'Spiral torquing order from center to edges prevents warping of the precision machined deck face.',
     colorTag: '#f472b6',
@@ -2218,8 +2218,8 @@ export const ENGINE_ASSEMBLY_STEPS = [
     translations: {
       en: 'Station 9: Seat intake and exhaust camshafts in matching numbered bearing caps. Torque caps to 10 Newton-meters and lock VANOS variable phasers.',
       ta: 'படி 9: இன்டேக் மற்றும் எக்ஸ்ஹாஸ்ட் கேம்ஷாஃப்ட்களை பொருத்தி, கேப்ஸ்களை 10 நியூட்டன் மீட்டரில் இறுக்கி வானோஸ் ஸ்ப்ராக்கெட்களை லாக் செய்யவும்.',
-      ml: 'ഘട്ടം 9: കാംഷാഫ്റ്റുകൾ ഘടിപ്പിച്ച് 10 ന്യൂട്ടൺ മീറ്ററിൽ മുറുക്കുക.',
-      hi: 'चरण 9: इनटेक और एग्जॉस्ट कैमशाफ्ट लगाएं और कैप्स को 10 न्यूटन मीटर पर कसें।'
+      ml: 'ഘട്ടം 9: ഇൻടേക്ക്, എക്‌സ്‌ഹോസ്റ്റ് കാംഷാഫ്റ്റുകൾ ഘടിപ്പിച്ച് 10 ന്യൂട്ടൺ മീറ്ററിൽ മുറുക്കി വാനോസ് ലോക്ക് ചെയ്യുക.',
+      hi: 'चरण 9: इनटेक और एग्जॉस्ट कैमशाफ्ट स्थापित करें, कैप्स को 10 न्यूटन मीटर पर कसें और वैनोस को लॉक करें।'
     },
     tip: 'Ensure camshaft base circles are pointed away from lifters before torquing bearing caps down.',
     colorTag: '#fb7185',
@@ -2269,8 +2269,8 @@ export const ENGINE_ASSEMBLY_STEPS = [
     translations: {
       en: 'Station 10: Route the duplex timing chain around crank and cam sprockets. Install composite guide rails and release the hydraulic chain tensioner pin.',
       ta: 'படி 10: டைமிங் செயினை ஸ்ப்ராக்கெட்களை சுற்றி பொருத்தி, கைடு ரெயில்களை அமைத்து ஹைட்ராலிக் டென்ஷனர் பின்னை விடுவிக்கவும்.',
-      ml: 'ഘട്ടം 10: ടൈമിംഗ് ചെയിനും ഗൈഡുകളും ഘടിപ്പിച്ച് ടെൻഷനർ റിലീസ് ചെയ്യുക.',
-      hi: 'चरण 10: टाइमिंग चेन लगाएं, गाइड रेल फिट करें और हाइड्रोलिक टेंशनर पिन छोड़ें।'
+      ml: 'ഘട്ടം 10: ഡ്യുപ്ലെക്സ് ടൈമിംഗ് ചെയിനും ഗൈഡുകളും ഘടിപ്പിച്ച് ഹൈഡ്രോളിക് ടെൻഷനർ പിൻ റിലീസ് ചെയ്യുക.',
+      hi: 'चरण 10: डुप्लेक्स टाइमिंग चेन और गाइड रेल लगाएं तथा हाइड्रोलिक टेंशनर पिन को रिलीज करें।'
     },
     tip: 'Ensure TDC (Top Dead Center) timing pin is locked in crankshaft flywheel flange during chain setup.',
     colorTag: '#f97316',
@@ -2320,8 +2320,8 @@ export const ENGINE_ASSEMBLY_STEPS = [
     translations: {
       en: 'Station 11: Install the magnesium valve cover with pre-molded elastomer seal. Fasten perimeter Torx bolts to 9 Newton-meters and insert 6 ignition coils.',
       ta: 'படி 11: மெக்னீசியம் வால்வ் கவரை பொருத்தி 9 நியூட்டன் மீட்டரில் இறுக்கவும். 6 இக்னிஷன் காயில்களை செருகவும்.',
-      ml: 'ഘട്ടം 11: വാൽവ് കവർ 9 ന്യൂട്ടൺ മീറ്ററിൽ ഘടിപ്പിച്ച് ഇഗ്നിഷൻ കോയിലുകൾ സ്ഥാപിക്കുക.',
-      hi: 'चरण 11: मैग्नीशियम वाल्व कवर 9 न्यूटन मीटर पर लगाएं और 6 इग्निशन कॉइल्स लगाएं।'
+      ml: 'ഘട്ടം 11: മഗ്നീഷ്യം വാൽവ് കവർ 9 ന്യൂട്ടൺ മീറ്ററിൽ മുറുക്കി 6 ഇഗ്നിഷൻ കോയിലുകൾ ഘടിപ്പിക്കുക.',
+      hi: 'चरण 11: मैग्नीशियम वाल्व कवर को 9 न्यूटन मीटर पर कसें और 6 डायरेक्ट इग्निशन कॉइल्स लगाएं।'
     },
     tip: 'Magnesium valve cover isolates valvetrain acoustics and reduces top-end center of gravity.',
     colorTag: '#eab308',
@@ -2371,8 +2371,8 @@ export const ENGINE_ASSEMBLY_STEPS = [
     translations: {
       en: 'Station 12: Mount the twin-scroll turbocharger onto the divided exhaust manifold. Fasten Inconel studs to 35 Newton-meters and connect the electronic wastegate. Engine assembly successfully certified!',
       ta: 'படி 12: இரட்டை-ஸ்க்ரோல் டர்போசார்ஜரை எக்ஸ்ஹாஸ்ட் மேனிஃபோல்டில் பொருத்தி, 35 நியூட்டன் மீட்டரில் இறுக்கவும். என்ஜின் அசெம்பிளி வெற்றிகரமாக முடிந்தது!',
-      ml: 'ഘട്ടം 12: ട്വിൻ-സ്ക്രോൾ ടർബോചാർജർ 35 ന്യൂട്ടൺ മീറ്ററിൽ ഘടിപ്പിക്കുക. എഞ്ചിൻ അസംബ്ലി പൂർത്തിയായി.',
-      hi: 'चरण 12: ट्विन-स्क्रॉल टर्बोचार्जर लगाएं और 35 न्यूटन मीटर पर कसें। इंजन असेंबली पूरी हुई!'
+      ml: 'ഘട്ടം 12: ട്വിൻ-സ്ക്രോൾ ടർബോചാർജർ 35 ന്യൂട്ടൺ മീറ്ററിൽ ഘടിപ്പിക്കുക. എഞ്ചിൻ അസംബ്ലി വിജയകരമായി പൂർത്തിയായി!',
+      hi: 'चरण 12: ट्विन-स्क्रॉल टर्बोचार्जर लगाएं और इनकॉनेल स्टड्स को 35 न्यूटन मीटर पर कसें। इंजन असेंबली प्रमाणित हुई!'
     },
     tip: 'Pre-prime turbocharger center bearing cartridge with 20ml fresh engine oil before first start.',
     colorTag: '#10b981',
