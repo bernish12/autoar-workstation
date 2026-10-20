@@ -1362,8 +1362,16 @@ export default function AssemblyViewer3D({
           child.material.emissive = new THREE.Color(0x000000);
           child.material.emissiveIntensity = 0;
         } else if (isUpcoming) {
-          // Upcoming parts yet to be assembled: HIDDEN in step-by-step assembly!
-          child.visible = false;
+          if (isARMode || isProjectedARMode) {
+            // Projected AR Ghost Hologram: Shows the full target assembly silhouette so operator sees the final assembly!
+            child.visible = true;
+            if (ghostMatRef.current) {
+              child.material = ghostMatRef.current;
+            }
+          } else {
+            // In pure clean assembly view: upcoming parts hidden
+            child.visible = false;
+          }
         }
 
         // 3. Real Metrological Defect Deformation (Physically tilts the ACTIVE step's part in 3D!)

@@ -64,10 +64,21 @@ export default function AROverlayHUD({
           rec.interimResults = false;
           rec.lang = 'en-IN'; // Indian English + Tanglish / Tamil phonetic support
 
+          let lastCmdTime = 0;
           rec.onresult = (event) => {
+            // Acoustic Echo Cancellation: ignore microphone while system voice assistant is speaking
+            if (soundFx.isSpeaking) {
+              return;
+            }
+            const now = Date.now();
+            if (now - lastCmdTime < 1200) {
+              return; // Debounce rapid repeat commands
+            }
+
             const lastIdx = event.results.length - 1;
             const transcript = event.results[lastIdx][0].transcript.trim().toLowerCase();
             console.log('[AR Voice Heard]:', transcript);
+            lastCmdTime = now;
 
             // Comprehensive Tamil & English Voice Command Dictionary
             if (transcript.includes('next') || transcript.includes('aduthu') || transcript.includes('adutha') || transcript.includes('forward') || transcript.includes('அடுத்து')) {
