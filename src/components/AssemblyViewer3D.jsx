@@ -77,13 +77,52 @@ export default function AssemblyViewer3D({
 
     // Close, crisp 3/4 isometric camera framing
     const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
-    camera.position.set(3.8, 2.0, 4.0);
+    let renderer = null;
+    const glCanvas = document.createElement('canvas');
 
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: true,
-      powerPreference: 'high-performance'
-    });
+    try {
+      renderer = new THREE.WebGLRenderer({
+        canvas: glCanvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: 'high-performance'
+      });
+    } catch (e1) {
+      console.warn('High-performance WebGL context failed, trying default WebGL fallback...', e1);
+      try {
+        renderer = new THREE.WebGLRenderer({
+          canvas: glCanvas,
+          antialias: false,
+          alpha: true,
+          powerPreference: 'default',
+          failIfMajorPerformanceCaveat: false
+        });
+      } catch (e2) {
+        console.error('All WebGL context creations failed:', e2);
+      }
+    }
+
+    if (!renderer) {
+      console.error('WebGL is unavailable in this browser session');
+      const banner = document.createElement('div');
+      banner.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#080c14;color:#94a3b8;font-family:sans-serif;padding:24px;text-align:center;z-index:10;';
+      banner.innerHTML = `
+        <div style="font-size:3rem;margin-bottom:12px;">🏎️</div>
+        <h3 style="color:#f8fafc;margin:0 0 8px 0;font-size:1.2rem;font-weight:700;">3D Graphics Accelerator Reset</h3>
+        <p style="max-width:440px;font-size:0.9rem;line-height:1.6;margin:0 0 16px 0;color:#94a3b8;">
+          Your browser's WebGL graphics memory is momentarily locked by background tabs. Click below to reinitialize the 3D workstation.
+        </p>
+        <button id="btn-retry-webgl" style="background:linear-gradient(135deg, #00d4ff, #0077ff);color:#030712;border:none;padding:10px 22px;border-radius:8px;font-weight:700;font-size:0.95rem;cursor:pointer;box-shadow:0 0 20px rgba(0,212,255,0.4);">
+          ⚡ REINITIALIZE 3D WORKSTATION
+        </button>
+      `;
+      container.appendChild(banner);
+      banner.querySelector('#btn-retry-webgl')?.addEventListener('click', () => {
+        window.location.reload();
+      });
+      return;
+    }
+
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
@@ -93,10 +132,14 @@ export default function AssemblyViewer3D({
     rendererRef.current = renderer;
 
     // Setup Photorealistic HDR Studio Environment for PBR Reflections
-    const pmremGenerator = new THREE.PMREMGenerator(renderer);
-    pmremGenerator.compileEquirectangularShader();
-    const roomEnv = new RoomEnvironment();
-    scene.environment = pmremGenerator.fromScene(roomEnv, 0.04).texture;
+    try {
+      const pmremGenerator = new THREE.PMREMGenerator(renderer);
+      pmremGenerator.compileEquirectangularShader();
+      const roomEnv = new RoomEnvironment();
+      scene.environment = pmremGenerator.fromScene(roomEnv, 0.04).texture;
+    } catch (hdrErr) {
+      console.warn('HDR RoomEnvironment fallback to ambient lights:', hdrErr);
+    }
 
     // Ghost Hologram Material for upcoming unassembled parts
     ghostMatRef.current = new THREE.MeshStandardMaterial({
@@ -872,10 +915,14 @@ export default function AssemblyViewer3D({
       window.removeEventListener('resize', handleResize);
       if (ro) ro.disconnect();
       if (reqIdRef.current) cancelAnimationFrame(reqIdRef.current);
-      if (renderer.domElement && container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
+      if (renderer) {
+        if (renderer.domElement && container.contains(renderer.domElement)) {
+          container.removeChild(renderer.domElement);
+        }
+        try {
+          renderer.dispose();
+        } catch (dispErr) {}
       }
-      renderer.dispose();
     };
   }, []);
 

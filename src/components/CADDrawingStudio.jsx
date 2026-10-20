@@ -38,7 +38,17 @@ export default function CADDrawingStudio({ onSendToAR }) {
     const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
     camera.position.set(3.5, 2.8, 4.2);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    let renderer = null;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    } catch (e1) {
+      try {
+        renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'default' });
+      } catch (e2) {
+        console.error('CAD Drawing Studio WebGL unavailable:', e2);
+        return;
+      }
+    }
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
