@@ -10,6 +10,7 @@ class SoundController {
     this.isSpeaking = false;
     this.speakingListeners = new Set();
     this.audioCache = new Map();
+    this.activeSpeakId = 0;
   }
 
   setLanguage(langCode) {
@@ -84,6 +85,9 @@ class SoundController {
   speak(text, stepObj = null, moduleKey = null) {
     if (!this.speechEnabled) return;
 
+    // Mutex token: invalidate any pending or asynchronous audio from prior steps
+    const speakId = ++this.activeSpeakId;
+
     // Immediately stop any prior speech or audio playback
     this.stopSpeech();
 
@@ -138,17 +142,21 @@ class SoundController {
     if (preAudioFile) {
       this.playVoiceAudioFile(preAudioFile, textToSpeak, lang, () => {
         // Fallback to dynamic TTS if file fails to load
-        this.fallbackSpeak(textToSpeak, lang, stepObj);
-      });
+        if (this.activeSpeakId === speakId) {
+          this.fallbackSpeak(textToSpeak, lang, stepObj, speakId);
+        }
+      }, speakId);
       return;
     }
 
     // If no pre-recorded audio file (e.g. custom imported CAD), use dynamic TTS engine
-    this.fallbackSpeak(textToSpeak, lang, stepObj);
+    this.fallbackSpeak(textToSpeak, lang, stepObj, speakId);
   }
 
   // Play pre-recorded or dynamically fetched audio file with zero latency
-  playVoiceAudioFile(audioUrl, spokenText, lang, onFallback) {
+  playVoiceAudioFile(audioUrl, spokenText, lang, onFallback, speakId = null) {
+    if (speakId && this.activeSpeakId !== speakId) return;
+
     try {
       let audio = this.audioCache.get(audioUrl);
       if (!audio) {
@@ -177,6 +185,7 @@ class SoundController {
         if (this.currentAudio === audio) {
           this.currentAudio = null;
         }
+        if (speakId && this.activeSpeakId !== speakId) return;
         if (onFallback) onFallback();
         else this.notifySpeaking(false, lang);
       };
@@ -188,17 +197,21 @@ class SoundController {
           if (this.currentAudio === audio) {
             this.currentAudio = null;
           }
+          if (speakId && this.activeSpeakId !== speakId) return;
           if (onFallback) onFallback();
           else this.notifySpeaking(false, lang);
         });
       }
     } catch {
+      if (speakId && this.activeSpeakId !== speakId) return;
       if (onFallback) onFallback();
     }
   }
 
   // Dynamic TTS streaming fallback for custom CAD models (Zero delay on production)
-  fallbackSpeak(textToSpeak, lang, stepObj) {
+  fallbackSpeak(textToSpeak, lang, stepObj, speakId = null) {
+    if (speakId && this.activeSpeakId !== speakId) return;
+
     const isLocal = typeof window !== 'undefined' && 
       (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
@@ -206,17 +219,20 @@ class SoundController {
       // In local dev with Vite dev server, proxy handles /api/tts
       const ttsUrl = `/api/tts?ie=UTF-8&tl=${lang}&client=tw-ob&q=${encodeURIComponent(textToSpeak)}`;
       this.playVoiceAudioFile(ttsUrl, textToSpeak, lang, () => {
-        this.synthesizeSpeech(textToSpeak, lang, stepObj);
-      });
+        if (!speakId || this.activeSpeakId === speakId) {
+          this.synthesizeSpeech(textToSpeak, lang, stepObj, speakId);
+        }
+      }, speakId);
     } else {
       // In production static hosting (Render), /api/tts is not available.
       // Go directly to browser Web Speech Synthesis instantly!
-      this.synthesizeSpeech(textToSpeak, lang, stepObj);
+      this.synthesizeSpeech(textToSpeak, lang, stepObj, speakId);
     }
   }
 
   // Browser Web Speech Synthesis fallback
-  synthesizeSpeech(textToSpeak, lang, stepObj) {
+  synthesizeSpeech(textToSpeak, lang, stepObj, speakId = null) {
+    if (speakId && this.activeSpeakId !== speakId) return;
     if (!('speechSynthesis' in window)) {
       this.notifySpeaking(false, lang);
       return;

@@ -318,12 +318,17 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentStepIndex, isTorqueVerified, currentStep, isZenMode, stepsList]);
 
-  // When language or module changes: preload offline voice packs, update controller and re-speak current step
+  // When language or module changes: preload offline voice packs and update controller language
+  const prevLangRef = useRef(selectedVoiceLanguage);
   useEffect(() => {
     soundFx.setLanguage(selectedVoiceLanguage);
     soundFx.preloadVoicePacks(effectiveModule, selectedVoiceLanguage);
-    if (speechEnabled && currentStep?.voiceScript) {
-      soundFx.speak(currentStep.voiceScript, currentStep, effectiveModule);
+    // Only re-speak if the user actively switched the language, not on initial mount
+    if (prevLangRef.current !== selectedVoiceLanguage) {
+      prevLangRef.current = selectedVoiceLanguage;
+      if (speechEnabled && currentStep?.voiceScript) {
+        soundFx.speak(currentStep.voiceScript, currentStep, effectiveModule);
+      }
     }
   }, [selectedVoiceLanguage, effectiveModule]);
 

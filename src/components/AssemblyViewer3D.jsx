@@ -77,6 +77,7 @@ export default function AssemblyViewer3D({
 
     // Close, crisp 3/4 isometric camera framing
     const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+    camera.position.set(3.8, 2.0, 4.0);
     let renderer = null;
     const glCanvas = document.createElement('canvas');
 
