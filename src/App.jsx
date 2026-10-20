@@ -713,11 +713,15 @@ export default function App() {
                 const next = !soundEnabled;
                 setSoundEnabled(next);
                 soundFx.soundEnabled = next;
-                if (next) soundFx.playSuccess();
+                if (next) {
+                  soundFx.initContext();
+                  soundFx.playSuccess();
+                }
               }}
               title={soundEnabled ? 'Sound Effects Active (Click to Mute)' : 'Sound Effects Muted (Click to Enable)'}
             >
-              {soundEnabled ? '🔊' : '🔇'}
+              <span className="audio-glyph">{soundEnabled ? '🔊' : '🔇'}</span>
+              <span className="audio-label font-mono">{soundEnabled ? 'SFX' : 'MUTED'}</span>
             </button>
 
             <button
@@ -737,6 +741,7 @@ export default function App() {
                 setSpeechEnabled(next);
                 soundFx.speechEnabled = next;
                 if (next && currentStep?.voiceScript) {
+                  soundFx.initContext();
                   soundFx.speak(currentStep.voiceScript, currentStep, effectiveModule, true);
                 } else if (!next) {
                   soundFx.stopSpeech();
@@ -744,7 +749,8 @@ export default function App() {
               }}
               title={speechEnabled ? 'Voice Assistant Active (Click to Mute)' : 'Voice Assistant Muted (Click to Unmute & Speak)'}
             >
-              {speechEnabled ? '🗣️' : '🤫'}
+              <span className="audio-glyph">{speechEnabled ? '🗣️' : '🤫'}</span>
+              <span className="audio-label font-mono">{speechEnabled ? 'VOICE' : 'MUTED'}</span>
             </button>
 
             <div className="suite-divider"></div>
@@ -1226,8 +1232,11 @@ export default function App() {
                       className={`btn-step-voice-play ${isVoiceSpeaking ? 'playing' : ''}`}
                       onClick={() => {
                         if (currentStep?.voiceScript) {
+                          setSoundEnabled(true);
+                          soundFx.soundEnabled = true;
                           setSpeechEnabled(true);
                           soundFx.speechEnabled = true;
+                          soundFx.initContext();
                           soundFx.speak(currentStep.voiceScript, currentStep, effectiveModule, true);
                         }
                       }}

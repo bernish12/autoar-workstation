@@ -448,17 +448,28 @@
 
 .btn-audio-mini {
   background: transparent;
-  border: none;
-  width: 26px;
+  border: 1px solid transparent;
   height: 26px;
-  border-radius: 50%;
-  font-size: 13px;
+  border-radius: 13px;
+  padding: 0 7px;
+  font-size: 11px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 4px;
   cursor: pointer;
   color: #94a3b8;
   transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-audio-mini .audio-glyph {
+  font-size: 13px;
+}
+
+.btn-audio-mini .audio-label {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
 }
 
 .btn-audio-mini:hover,

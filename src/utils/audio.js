@@ -159,28 +159,32 @@ class SoundController {
     this.fallbackSpeak(textToSpeak, lang, stepObj, speakId);
   }
 
-  // Play pre-recorded or dynamically fetched audio file with zero latency
+  // Play pre-recorded or dynamically fetched audio file with zero latency & bulletproof playback
   playVoiceAudioFile(audioUrl, spokenText, lang, onFallback, speakId = null) {
     if (speakId && this.activeSpeakId !== speakId) return;
 
+    this.initContext();
+
     try {
-      let audio = this.audioCache.get(audioUrl);
-      if (!audio) {
-        audio = new Audio();
-        audio.preload = 'auto';
-        audio.src = audioUrl;
-        this.audioCache.set(audioUrl, audio);
-      } else {
-        try {
-          audio.pause();
-          audio.currentTime = 0;
-        } catch {}
-      }
+      const audio = new Audio(audioUrl);
+      audio.volume = 1.0;
+      audio.muted = false;
 
       this.currentAudio = audio;
-      this.notifySpeaking(true, lang, spokenText);
+
+      let safetyTimer = setTimeout(() => {
+        if (this.currentAudio === audio) {
+          this.currentAudio = null;
+          this.notifySpeaking(false, lang);
+        }
+      }, 15000);
+
+      audio.onplay = () => {
+        this.notifySpeaking(true, lang, spokenText);
+      };
 
       audio.onended = () => {
+        clearTimeout(safetyTimer);
         if (this.currentAudio === audio) {
           this.currentAudio = null;
         }
@@ -188,6 +192,7 @@ class SoundController {
       };
 
       audio.onerror = () => {
+        clearTimeout(safetyTimer);
         if (this.currentAudio === audio) {
           this.currentAudio = null;
         }
@@ -199,7 +204,8 @@ class SoundController {
       const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise.catch((err) => {
-          console.warn('Audio play error, falling back:', err);
+          clearTimeout(safetyTimer);
+          console.warn('Audio play error, falling back to speech synthesis:', err);
           if (this.currentAudio === audio) {
             this.currentAudio = null;
           }
@@ -230,8 +236,7 @@ class SoundController {
         }
       }, speakId);
     } else {
-      // In production static hosting (Render), /api/tts is not available.
-      // Go directly to browser Web Speech Synthesis instantly!
+      // In production static hosting (Render), go directly to browser Web Speech Synthesis
       this.synthesizeSpeech(textToSpeak, lang, stepObj, speakId);
     }
   }
@@ -271,8 +276,7 @@ class SoundController {
       let speechText = textToSpeak;
       let speechLang = targetLangCode;
 
-      // If Windows/Browser has NO regional voice installed (e.g. only English Microsoft Zira/David),
-      // Romanize the text phonetically so English voice can pronounce the Tamil/Malayalam/Hindi words clearly instead of silence!
+      // If Windows/Browser has NO regional voice installed, Romanize phonetics for English voice
       if (!matchingVoice && lang !== 'en') {
         matchingVoice = voices.find(v => v.lang.startsWith('en')) || voices[0] || null;
         speechLang = 'en-US';
@@ -283,16 +287,25 @@ class SoundController {
       utterance.lang = speechLang;
       utterance.rate = lang === 'ta' || lang === 'ml' ? 0.95 : 1.0;
       utterance.pitch = 1.0;
+      utterance.volume = 1.0;
       if (matchingVoice) {
         utterance.voice = matchingVoice;
       }
 
-      this.notifySpeaking(true, lang, textToSpeak);
+      let speechTimer = setTimeout(() => {
+        this.notifySpeaking(false, lang);
+      }, 15000);
+
+      utterance.onstart = () => {
+        this.notifySpeaking(true, lang, textToSpeak);
+      };
 
       utterance.onend = () => {
+        clearTimeout(speechTimer);
         this.notifySpeaking(false, lang);
       };
       utterance.onerror = () => {
+        clearTimeout(speechTimer);
         this.notifySpeaking(false, lang);
       };
 
