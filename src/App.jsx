@@ -277,10 +277,7 @@ export default function App() {
     return () => soundFx.removeSpeakingListener(handleSpeaking);
   }, []);
 
-  // Auto-load default 320mm Ventilated Disc Brake assembly on startup
-  useEffect(() => {
-    handleLoadSpecificCAD('brake', false);
-  }, []);
+
 
   // Global Keyboard Navigation Shortcuts (ArrowRight / Space -> Next, ArrowLeft -> Prev, 'Z' -> Zen, 'E' -> Explode, 'T' -> Torque)
   useEffect(() => {
@@ -334,7 +331,7 @@ export default function App() {
 
   // Trigger voice narration and set step torque on step change
   useEffect(() => {
-    if (!currentStep) return;
+    if (!currentStep || !customModel) return;
     const isStepDone = completedSteps.includes(currentStepIndex + 1);
     if (!isStepDone) {
       setCurrentTorque(0);
