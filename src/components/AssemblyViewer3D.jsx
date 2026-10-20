@@ -34,6 +34,7 @@ export default function AssemblyViewer3D({
   const projectedARGroupRef = useRef(null);
   const brakeClampJigRef = useRef(null);
   const clutchStandJigRef = useRef(null);
+  const clutchClampGroupRef = useRef(null);
   const carSkilletJigRef = useRef(null);
   const knuckleViseJigRef = useRef(null);
   const laserScanRef = useRef(null);
@@ -75,9 +76,9 @@ export default function AssemblyViewer3D({
     const width = container.clientWidth;
     const height = container.clientHeight;
 
-    // Close, crisp 3/4 isometric camera framing
+    // Close, crisp 3/4 isometric camera framing facing workpiece center
     const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
-    camera.position.set(3.8, 2.0, 4.0);
+    camera.position.set(1.8, 1.2, 4.4);
     let renderer = null;
     const glCanvas = document.createElement('canvas');
 
@@ -337,28 +338,34 @@ export default function AssemblyViewer3D({
     clutchColMesh.receiveShadow = true;
     clutchStandJig.add(clutchColMesh);
 
-    // Crankcase rear engine bellhousing backplate simulator
-    const engineBossGeo = new THREE.CylinderGeometry(1.36, 1.36, 0.22, 36);
+    // Crankcase rear engine bellhousing backplate simulator (recessed safely behind workpiece)
+    const engineBossGeo = new THREE.CylinderGeometry(1.35, 1.35, 0.06, 36);
     engineBossGeo.rotateX(Math.PI / 2);
-    const engineBossMesh = new THREE.Mesh(engineBossGeo, fixtureMat);
-    engineBossMesh.position.set(0, 0.06, -0.50);
+    const engineBossMesh = new THREE.Mesh(engineBossGeo, new THREE.MeshStandardMaterial({
+      color: 0x334155,
+      metalness: 0.82,
+      roughness: 0.32
+    }));
+    engineBossMesh.position.set(0, 0.06, -0.60);
     clutchStandJig.add(engineBossMesh);
 
-    // Machined Crankshaft output flange with open central pilot bore pocket
-    const crankFlangeGeo = new THREE.CylinderGeometry(0.44, 0.44, 0.12, 28);
+    // Machined Crankshaft output flange datum socket
+    const crankFlangeGeo = new THREE.CylinderGeometry(0.42, 0.42, 0.06, 28);
     crankFlangeGeo.rotateX(Math.PI / 2);
     const crankFlangeMesh = new THREE.Mesh(crankFlangeGeo, new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.95, roughness: 0.18 }));
-    crankFlangeMesh.position.set(0, 0.06, -0.38);
+    crankFlangeMesh.position.set(0, 0.06, -0.54);
     clutchStandJig.add(crankFlangeMesh);
 
-    // Recessed Crankshaft Pilot Pocket Bore (dark cavity where pilot bearing seats flush)
-    const pilotPocketGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.14, 24);
+    // Recessed Crankshaft Pilot Pocket Bore (cavity where pilot bearing seats flush)
+    const pilotPocketGeo = new THREE.CylinderGeometry(0.16, 0.16, 0.08, 24);
     pilotPocketGeo.rotateX(Math.PI / 2);
     const pilotPocketMesh = new THREE.Mesh(pilotPocketGeo, new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.85 }));
-    pilotPocketMesh.position.set(0, 0.06, -0.37);
+    pilotPocketMesh.position.set(0, 0.06, -0.52);
     clutchStandJig.add(pilotPocketMesh);
 
-    // 3 Radial Pneumatic Clamping Arms holding the Flywheel Outer Starter Ring Gear (at 90°, 210°, 330°)
+    // 3 Radial Pneumatic Clamping Arms holding Flywheel (grouped to engage dynamically from Step 2)
+    const clutchClampGroup = new THREE.Group();
+    clutchClampGroup.name = 'clutchClampGroup';
     for (const angle of [Math.PI / 2, Math.PI * 7 / 6, Math.PI * 11 / 6]) {
       const clampRad = 1.28;
       const armX = Math.cos(angle) * clampRad;
@@ -368,7 +375,7 @@ export default function AssemblyViewer3D({
       const armMesh = new THREE.Mesh(armGeo, clampAmberMat);
       armMesh.position.set(armX, armY, -0.28);
       armMesh.rotation.z = angle - Math.PI / 2;
-      clutchStandJig.add(armMesh);
+      clutchClampGroup.add(armMesh);
 
       // Clamp rubber contact tip securely touching outer starter ring gear at r=1.215
       const tipGeo = new THREE.BoxGeometry(0.14, 0.08, 0.18);
@@ -377,8 +384,10 @@ export default function AssemblyViewer3D({
       const tipY = 0.06 + Math.sin(angle) * 1.215;
       tipMesh.position.set(tipX, tipY, -0.28);
       tipMesh.rotation.z = angle - Math.PI / 2;
-      clutchStandJig.add(tipMesh);
+      clutchClampGroup.add(tipMesh);
     }
+    clutchStandJig.add(clutchClampGroup);
+    clutchClampGroupRef.current = clutchClampGroup;
 
     fixtureGroup.add(clutchStandJig);
     clutchStandJigRef.current = clutchStandJig;
@@ -1373,10 +1382,15 @@ export default function AssemblyViewer3D({
           child.material.emissiveIntensity = 0;
         } else if (isUpcoming) {
           if (isARMode || isProjectedARMode) {
-            // Projected AR Ghost Hologram: Shows the full target assembly silhouette so operator sees the final assembly!
-            child.visible = true;
-            if (ghostMatRef.current) {
-              child.material = ghostMatRef.current;
+            // Projected AR Ghost Hologram: Shows ONLY immediate next mating part (currentStep + 1) as subtle reference
+            // Eliminates visual clutter so operator sees the active step with 100% clarity!
+            if (partStep === currentStep + 1) {
+              child.visible = true;
+              if (ghostMatRef.current) {
+                child.material = ghostMatRef.current;
+              }
+            } else {
+              child.visible = false;
             }
           } else {
             // In pure clean assembly view: upcoming parts hidden
@@ -1412,10 +1426,15 @@ export default function AssemblyViewer3D({
       }
     });
 
+    // Toggle Flywheel hold-down clamps: engaged when Flywheel is seated (Step 2 and above)
+    if (clutchClampGroupRef.current) {
+      clutchClampGroupRef.current.visible = currentStep >= 2;
+    }
+
     if (!isDefectSimulated && defectBoxRef.current) {
       defectBoxRef.current.visible = false;
     }
-  }, [customModel, explodedPercent, currentStep, isDefectSimulated, defectAngleOffset, isXRayMode, activePartKey, showAllParts]);
+  }, [customModel, explodedPercent, currentStep, isDefectSimulated, defectAngleOffset, isXRayMode, activePartKey, showAllParts, isProjectedARMode, isARMode]);
 
   return (
     <div
