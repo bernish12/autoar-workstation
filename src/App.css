@@ -5059,6 +5059,8 @@
 
 .badge-pass { background: rgba(16, 185, 129, 0.2); color: #34d399; }
 .badge-reject { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+.badge-warning { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+.audit-item.log-warning { border-left: 2px solid #f59e0b; background: rgba(245, 158, 11, 0.05); }
 
 .log-code {
   font-size: 10px;
@@ -5580,5 +5582,28 @@
   font-weight: 700;
   box-shadow: 0 0 10px rgba(168, 85, 247, 0.25);
 }
+
+.optical-report-card.report-no-component {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid #f59e0b;
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.2);
+}
+
+.report-no-component .report-badge {
+  color: #f59e0b;
+  font-weight: 800;
+}
+
+.report-no-component .report-verdict {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fde68a;
+  border-left: 3px solid #f59e0b;
+}
+
+.text-amber {
+  color: #f59e0b !important;
+}
+
+
 
 

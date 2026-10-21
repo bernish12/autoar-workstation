@@ -205,8 +205,10 @@ export default function PokaYokeQRScannerModal({
             oCtx.strokeRect(roiX, roiY, roiW, roiH);
             oCtx.setLineDash([]);
 
-            // Draw Real-Time Detected Object Bounding Box if edges exist
-            if (objW > 20 && objH > 20) {
+            // Live Component Presence Verification
+            const isLiveObjPresent = objW >= 65 && objH >= 65 && edgeCount >= 40;
+
+            if (isLiveObjPresent) {
               oCtx.strokeStyle = 'rgba(16, 185, 129, 0.9)';
               oCtx.lineWidth = 2;
               oCtx.strokeRect(roiX + minObjX, roiY + minObjY, objW, objH);
@@ -215,8 +217,13 @@ export default function PokaYokeQRScannerModal({
 
               // Dimension tags
               oCtx.fillStyle = '#10b981';
-              oCtx.font = '10px monospace';
-              oCtx.fillText(`W: ${objW}px | H: ${objH}px`, roiX + minObjX, roiY + minObjY - 4);
+              oCtx.font = 'bold 10px monospace';
+              oCtx.fillText(`🎯 COMPONENT READY: ${objW}×${objH}px`, roiX + minObjX, roiY + minObjY - 4);
+            } else {
+              // Live warning when reticle is empty or object is not aligned
+              oCtx.fillStyle = 'rgba(245, 158, 11, 0.9)';
+              oCtx.font = 'bold 10px monospace';
+              oCtx.fillText('⚠️ NO COMPONENT: ALIGN ACTUAL PART IN RETICLE', roiX + 8, roiY + 18);
             }
 
             // Real-Time Laser Scan Line passing through live camera
@@ -337,6 +344,98 @@ export default function PokaYokeQRScannerModal({
     const detectedHeight = maxY > minY ? (maxY - minY) : 0;
     const edgePixelCount = edges.reduce((acc, val) => acc + (val > 0 ? 1 : 0), 0);
     const meanEdgeIntensity = edgePixelCount > 0 ? (totalGrad / edgePixelCount) : 0;
+
+    // Check edge presence in the central 60% of the reticle to prevent empty/shadow/face false positives
+    let centerEdgeCount = 0;
+    const cMinX = Math.floor(roiW * 0.2);
+    const cMaxX = Math.floor(roiW * 0.8);
+    const cMinY = Math.floor(roiH * 0.2);
+    const cMaxY = Math.floor(roiH * 0.8);
+
+    for (let y = cMinY; y < cMaxY; y++) {
+      for (let x = cMinX; x < cMaxX; x++) {
+        if (edges[y * roiW + x] > 0) {
+          centerEdgeCount++;
+        }
+      }
+    }
+
+    const isComponentPresent = detectedWidth >= 65 && detectedHeight >= 65 && edgePixelCount >= 80 && centerEdgeCount >= 30 && (detectedWidth * detectedHeight) >= 5000;
+
+    // If NO real component is in the reticle, immediately alert and reject!
+    if (!isComponentPresent) {
+      oCtx.strokeStyle = '#f59e0b';
+      oCtx.lineWidth = 3;
+      oCtx.setLineDash([8, 6]);
+      oCtx.strokeRect(roiX, roiY, roiW, roiH);
+      oCtx.setLineDash([]);
+
+      oCtx.fillStyle = 'rgba(245, 158, 11, 0.18)';
+      oCtx.fillRect(roiX, roiY, roiW, roiH);
+
+      oCtx.fillStyle = '#f59e0b';
+      oCtx.font = 'bold 14px monospace';
+      oCtx.textAlign = 'center';
+      oCtx.fillText('⚠️ NO COMPONENT DETECTED', roiX + roiW / 2, roiY + roiH / 2 - 14);
+
+      oCtx.fillStyle = '#fef3c7';
+      oCtx.font = 'bold 11px monospace';
+      oCtx.fillText('PLEASE PLACE THE ACTUAL COMPONENT IN RETICLE', roiX + roiW / 2, roiY + roiH / 2 + 10);
+
+      oCtx.fillStyle = '#cbd5e1';
+      oCtx.font = '10px monospace';
+      oCtx.fillText('உண்மையான பாகத்தை கேமரா வட்டத்தில் வைக்கவும்', roiX + roiW / 2, roiY + roiH / 2 + 30);
+      oCtx.textAlign = 'left';
+
+      const timestamp = new Date().toLocaleTimeString();
+      let stageTitle = '';
+      if (inspectionStage === 'pre') {
+        stageTitle = 'STAGE 1: PRE-ASSEMBLY RAW COMPONENT INSPECTION';
+      } else if (inspectionStage === 'in_process') {
+        stageTitle = `STAGE 2: IN-PROCESS ASSEMBLY MATING (STEP ${currentStep?.id || 1}/12)`;
+      } else {
+        stageTitle = 'STAGE 3: FULL POST-ASSEMBLY EOL MASTER SIGN-OFF';
+      }
+
+      const noComponentResult = {
+        isPass: false,
+        isNoComponent: true,
+        timestamp,
+        stage: stageTitle,
+        stageSpec: 'Physical Object Presence Verification: FAILED (Target Reticle Empty)',
+        partName: `NO COMPONENT DETECTED — EXPECTED: ${expectedName}`,
+        partCode: expectedCode,
+        pixelResolution: `${detectedWidth} × ${detectedHeight} px (Below Minimum 65×65 px)`,
+        measuredDim: '0.00 mm (Null Target)',
+        nominalDim: '120.00 mm',
+        deviation: 'N/A (Reticle Empty)',
+        toleranceSpec: `±${sensitivityTolerance.toFixed(2)} mm (DIN ISO 2768-mK)`,
+        defectCoord: 'Target Reticle Empty / Unaligned',
+        verdict: 'NO COMPONENT DETECTED — PLEASE PLACE THE ACTUAL COMPONENT'
+      };
+
+      setOpticalScanResult(noComponentResult);
+      setIsAnalyzingSnapshot(false);
+
+      soundFx.playWrongBinBuzz();
+
+      const speechNoComp = selectedLanguage === 'ta'
+        ? 'கூறு எதுவும் கண்டறியப்படவில்லை. தயவுசெய்து உண்மையான பாகத்தை கேமரா வட்டத்தில் வைக்கவும்.'
+        : 'No component detected. Please place the actual component inside the target reticle.';
+      soundFx.speak(speechNoComp, currentStep);
+
+      setVerificationLog(prev => [
+        {
+          time: timestamp,
+          code: `${expectedCode} [NO COMPONENT DETECTED]`,
+          status: 'WARNING',
+          details: 'Reticle Empty / Unaligned • Please place actual component inside inspection frame'
+        },
+        ...prev.slice(0, 4)
+      ]);
+
+      return;
+    }
 
     // Actual Geometric Deviation calculation (based purely on pixel variance vs ISO tolerance)
     // mm scale conversion: 1 pixel ~ 0.52 mm calibrated optical field
@@ -766,10 +865,16 @@ export default function PokaYokeQRScannerModal({
 
                 {/* Metrology Inspection Report */}
                 {opticalScanResult ? (
-                  <div className={`optical-report-card font-mono ${opticalScanResult.isPass ? 'report-pass' : 'report-defect'}`}>
+                  <div className={`optical-report-card font-mono ${
+                    opticalScanResult.isNoComponent
+                      ? 'report-no-component'
+                      : (opticalScanResult.isPass ? 'report-pass' : 'report-defect')
+                  }`}>
                     <div className="report-hdr">
                       <span className="report-badge">
-                        {opticalScanResult.isPass ? '✓ DIN ISO 2768 PASS' : '⛔ DEFECT REJECTED'}
+                        {opticalScanResult.isNoComponent
+                          ? '⚠️ NO COMPONENT DETECTED'
+                          : (opticalScanResult.isPass ? '✓ DIN ISO 2768 PASS' : '⛔ DEFECT REJECTED')}
                       </span>
                       <span className="report-time">{opticalScanResult.timestamp}</span>
                     </div>
@@ -778,10 +883,24 @@ export default function PokaYokeQRScannerModal({
                       <strong>{opticalScanResult.verdict}</strong>
                     </div>
 
+                    {opticalScanResult.isNoComponent && (
+                      <div style={{
+                        background: 'rgba(245, 158, 11, 0.15)',
+                        border: '1px dashed #f59e0b',
+                        borderRadius: '6px',
+                        padding: '8px 10px',
+                        color: '#fef3c7',
+                        fontSize: '11px',
+                        lineHeight: '1.4'
+                      }}>
+                        👉 <strong>Action Required:</strong> Please place the actual physical component (<strong>{expectedName}</strong>) inside the camera reticle and click <em>"SCAN & ANALYZE PHYSICAL OBJECT"</em> again.
+                      </div>
+                    )}
+
                     <div className="report-details-grid font-mono">
                       <div className="r-item">
                         <span>Physical Object:</span>
-                        <strong>{opticalScanResult.partName}</strong>
+                        <strong className={opticalScanResult.isNoComponent ? 'text-amber' : ''}>{opticalScanResult.partName}</strong>
                       </div>
                       <div className="r-item">
                         <span>Bounding Size:</span>
@@ -789,13 +908,13 @@ export default function PokaYokeQRScannerModal({
                       </div>
                       <div className="r-item">
                         <span>Measured Optical Dim:</span>
-                        <strong className={opticalScanResult.isPass ? 'text-emerald' : 'text-rose'}>
+                        <strong className={opticalScanResult.isNoComponent ? 'text-amber' : (opticalScanResult.isPass ? 'text-emerald' : 'text-rose')}>
                           {opticalScanResult.measuredDim}
                         </strong>
                       </div>
                       <div className="r-item">
                         <span>Computed Deviation:</span>
-                        <strong className={opticalScanResult.isPass ? 'text-emerald' : 'text-rose'}>
+                        <strong className={opticalScanResult.isNoComponent ? 'text-amber' : (opticalScanResult.isPass ? 'text-emerald' : 'text-rose')}>
                           {opticalScanResult.deviation}
                         </strong>
                       </div>
@@ -805,7 +924,7 @@ export default function PokaYokeQRScannerModal({
                       </div>
                       <div className="r-item">
                         <span>Defect Pixel Coordinate:</span>
-                        <span className={opticalScanResult.isPass ? '' : 'text-rose'}>{opticalScanResult.defectCoord}</span>
+                        <span className={opticalScanResult.isNoComponent ? 'text-amber' : (opticalScanResult.isPass ? '' : 'text-rose')}>{opticalScanResult.defectCoord}</span>
                       </div>
                     </div>
                   </div>
@@ -848,10 +967,10 @@ export default function PokaYokeQRScannerModal({
                   </div>
                 ) : (
                   verificationLog.map((log, idx) => (
-                    <div key={idx} className={`audit-item ${log.status === 'PASS' ? 'log-pass' : 'log-reject'}`}>
+                    <div key={idx} className={`audit-item ${log.status === 'PASS' ? 'log-pass' : (log.status === 'WARNING' ? 'log-warning' : 'log-reject')}`}>
                       <div className="log-top">
                         <span className="log-time">{log.time}</span>
-                        <span className={`log-badge ${log.status === 'PASS' ? 'badge-pass' : 'badge-reject'}`}>
+                        <span className={`log-badge ${log.status === 'PASS' ? 'badge-pass' : (log.status === 'WARNING' ? 'badge-warning' : 'badge-reject')}`}>
                           {log.status}
                         </span>
                       </div>
