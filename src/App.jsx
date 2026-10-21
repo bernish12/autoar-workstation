@@ -684,36 +684,34 @@ export default function App() {
             >
               🏎️ BMW M4
             </button>
-          </div>
 
-          {/* Active CAD File Indicator Pill */}
-          {customModelName ? (
-            <div className="active-cad-chip loaded" title={`Loaded Model: ${customModelName}`}>
-              <span className="dot pulse-green"></span>
-              <span className="chip-filename font-mono">
-                {customModelName.length > 16 ? customModelName.substring(0, 14) + '...' : customModelName}
-              </span>
-              <button
-                className="btn-header-change-cad font-mono"
-                onClick={handleUnloadCAD}
-                title="Unload current CAD model to upload your own"
-              >
-                📂 Import
-              </button>
-            </div>
-          ) : (
             <button
-              className="btn-header-import-direct font-mono"
+              className="btn-browse-cad-direct font-mono"
               onClick={() => {
                 soundFx.playClick();
                 mainFileInputRef.current?.click();
               }}
-              title="Open File Explorer to load your 3D CAD model (.obj, .glb, .stl)"
+              style={{
+                background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(16, 185, 129, 0.3))',
+                border: '1.5px solid #00f0ff',
+                color: '#ffffff',
+                padding: '6px 14px',
+                borderRadius: '6px',
+                fontWeight: 800,
+                fontSize: '12px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: '0 0 12px rgba(0, 240, 255, 0.4)',
+                marginLeft: '8px'
+              }}
+              title="Open Windows File Explorer to select an OBJ / 3D CAD model (.obj, .glb, .stl)"
             >
-              <span className="dot pulse-cyan"></span>
-              <span>📂 Import CAD</span>
+              <span>📂</span>
+              <span>BROWSE OBJ FILE</span>
             </button>
-          )}
+          </div>
         </div>
 
         <div className="header-right">
@@ -871,6 +869,34 @@ export default function App() {
             <span className={`dot ${customModel ? 'pulse-green' : 'pulse-amber'}`}></span>
             <span>{assemblyTitle || 'Awaiting CAD Import'}</span>
           </div>
+
+          <button
+            className="btn-sidebar-browse-cad font-mono"
+            onClick={() => {
+              soundFx.playClick();
+              mainFileInputRef.current?.click();
+            }}
+            style={{
+              margin: '8px 12px 10px 12px',
+              padding: '8px 12px',
+              background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(16, 185, 129, 0.2))',
+              border: '1.5px dashed #00f0ff',
+              borderRadius: '6px',
+              color: '#38bdf8',
+              fontWeight: 800,
+              fontSize: '11px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              boxShadow: '0 0 10px rgba(0, 240, 255, 0.25)'
+            }}
+            title="Open Windows File Explorer to select an OBJ / 3D CAD file (.obj, .glb, .stl)"
+          >
+            <span>📂</span>
+            <span>OPEN OBJ FILE FROM PC</span>
+          </button>
 
           <div className="steps-list">
             {stepsList.length === 0 ? (
