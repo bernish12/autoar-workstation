@@ -5498,4 +5498,87 @@
   outline: none;
   cursor: pointer;
 }
+
+/* Header Defect Scan Button */
+.btn-header-defect-scan {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(16, 185, 129, 0.25));
+  border: 1px solid rgba(0, 240, 255, 0.5);
+  color: #38bdf8;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.2);
+  transition: all 0.2s ease;
+}
+
+.btn-header-defect-scan:hover {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.35), rgba(16, 185, 129, 0.45));
+  color: #ffffff;
+  border-color: #00f0ff;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+/* 3-Stage Inspection Selector Bar */
+.inspection-stage-selector-bar {
+  display: flex;
+  background: rgba(10, 16, 29, 0.95);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  border-radius: 8px;
+  padding: 4px;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.stage-chip-btn {
+  flex: 1;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #94a3b8;
+  font-size: 10px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.stage-chip-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.stage-chip-btn.stage-active-pre {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: #10b981;
+  color: #6ee7b7;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+}
+
+.stage-chip-btn.stage-active-in {
+  background: rgba(0, 240, 255, 0.2);
+  border-color: #00f0ff;
+  color: #38bdf8;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
+}
+
+.stage-chip-btn.stage-active-post {
+  background: rgba(168, 85, 247, 0.2);
+  border-color: #a855f7;
+  color: #d8b4fe;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.25);
+}
+
 

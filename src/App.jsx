@@ -825,6 +825,17 @@ export default function App() {
             </button>
 
             <button
+              className="btn-header-defect-scan"
+              onClick={() => {
+                soundFx.playClick();
+                setIsQRScannerOpen(true);
+              }}
+              title="Universal AI Optical Defect Scanner (Pre-Assembly, In-Process, or Full Assembly Sign-Off)"
+            >
+              🔬 Optical Defect Scan
+            </button>
+
+            <button
               className={`btn-zen-toggle ${isZenMode ? 'active-zen' : ''}`}
               onClick={() => {
                 soundFx.playClick();

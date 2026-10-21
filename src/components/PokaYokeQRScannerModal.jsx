@@ -30,6 +30,7 @@ export default function PokaYokeQRScannerModal({
   });
 
   const [sensitivityTolerance, setSensitivityTolerance] = useState(0.05); // DIN ISO 2768 tolerance: 0.05 mm
+  const [inspectionStage, setInspectionStage] = useState('in_process'); // 'pre' (Pre-Assembly Raw Part) | 'in_process' (Step-by-Step Mating) | 'post' (100% Full Assembly Sign-Off)
   const [isAnalyzingSnapshot, setIsAnalyzingSnapshot] = useState(false);
   const [opticalScanResult, setOpticalScanResult] = useState(null);
 
@@ -397,10 +398,31 @@ export default function PokaYokeQRScannerModal({
     }
 
     const timestamp = new Date().toLocaleTimeString();
+
+    let stageTitle = '';
+    let stageTargetName = '';
+    let stageSpecDesc = '';
+
+    if (inspectionStage === 'pre') {
+      stageTitle = 'STAGE 1: PRE-ASSEMBLY RAW COMPONENT INSPECTION';
+      stageTargetName = `${expectedName} [Incoming Raw Part]`;
+      stageSpecDesc = 'Surface cracks, casting porosity & deburring check (DIN EN 10204)';
+    } else if (inspectionStage === 'in_process') {
+      stageTitle = `STAGE 2: IN-PROCESS ASSEMBLY MATING (STEP ${currentStep?.id || 1}/12)`;
+      stageTargetName = `${expectedName} [Sub-Assembly Mating]`;
+      stageSpecDesc = 'Concentric runout & bolt alignment (DIN ISO 2768-mK)';
+    } else {
+      stageTitle = 'STAGE 3: FULL POST-ASSEMBLY EOL MASTER SIGN-OFF';
+      stageTargetName = 'Full Master Assembly (100% Completed Vehicle/Unit)';
+      stageSpecDesc = 'Full envelope symmetry, panel flushness (< 1.2 mm), dynamic rotor clearance';
+    }
+
     const finalResult = {
       isPass: !isDefect,
       timestamp,
-      partName: expectedName,
+      stage: stageTitle,
+      stageSpec: stageSpecDesc,
+      partName: stageTargetName,
       partCode: expectedCode,
       pixelResolution: `${detectedWidth} × ${detectedHeight} px`,
       measuredDim: `${measuredPhysicalWidthMm} mm`,
@@ -408,7 +430,7 @@ export default function PokaYokeQRScannerModal({
       deviation: `${isDefect ? '+' : ''}${Math.abs(realMeasuredDeviationMm)} mm`,
       toleranceSpec: `±${sensitivityTolerance.toFixed(2)} mm (DIN ISO 2768-mK)`,
       defectCoord: isDefect ? `[X: ${anomalyX - roiX} px, Y: ${anomalyY - roiY} px]` : 'Zero Anomalies',
-      verdict: isDefect ? 'SURFACE RUNOUT / DEFECT DETECTED — REJECTED' : 'CONTOUR & SURFACE UNIFORM — ISO 2768 PASS'
+      verdict: isDefect ? `${stageTitle}: DEFECT REJECTED` : `${stageTitle}: ISO 2768 PASS`
     };
 
     setOpticalScanResult(finalResult);
@@ -417,12 +439,12 @@ export default function PokaYokeQRScannerModal({
     if (!isDefect) {
       soundFx.playSuccess();
       const speech = selectedLanguage === 'ta'
-        ? `உண்மையான ஆப்டிகல் பகுப்பாய்வு முடிந்தது. பாகத்தின் மேற்பரப்பு பிழையின்றி உறுதி செய்யப்பட்டது.`
-        : `Real optical component analysis complete. Zero defects detected. Conforms to ISO 2768.`;
+        ? `${inspectionStage === 'post' ? 'முழுமையான அசெம்பிளி' : (inspectionStage === 'pre' ? 'அசெம்பிளிக்கு முந்தைய' : 'அசெம்பிளி')} ஆப்டிகல் பகுப்பாய்வு முடிந்தது. பிழையின்றி உறுதி செய்யப்பட்டது.`
+        : `${inspectionStage === 'post' ? 'Full post-assembly' : (inspectionStage === 'pre' ? 'Pre-assembly raw part' : 'In-process')} optical analysis complete. Zero defects detected. Conforms to ISO 2768.`;
       soundFx.speak(speech, currentStep);
 
       setVerificationLog(prev => [
-        { time: timestamp, code: `${expectedCode} [REAL CV PASS]`, status: 'PASS', details: `Pixel Width: ${detectedWidth}px • Deviation: ${Math.abs(realMeasuredDeviationMm)} mm` },
+        { time: timestamp, code: `${expectedCode} [${inspectionStage.toUpperCase()} PASS]`, status: 'PASS', details: `${stageTitle} • Dev: ${Math.abs(realMeasuredDeviationMm)} mm` },
         ...prev.slice(0, 4)
       ]);
 
@@ -568,6 +590,45 @@ export default function PokaYokeQRScannerModal({
         <div className="poka-modal-body">
           {/* Left Column: Live Camera with Real CV Overlay */}
           <div className="poka-viewfinder-column">
+            {/* 3-Stage Inspection Lifecycle Selector (Pre-Assembly, In-Process, Full Assembly) */}
+            {activeTab === 'optical' && (
+              <div className="inspection-stage-selector-bar font-mono">
+                <button
+                  className={`stage-chip-btn ${inspectionStage === 'pre' ? 'stage-active-pre' : ''}`}
+                  onClick={() => {
+                    soundFx.playClick();
+                    setInspectionStage('pre');
+                    setOpticalScanResult(null);
+                  }}
+                  title="Stage 1: Pre-Assembly (Raw Component Casting & Surface Inspection)"
+                >
+                  🟢 1. PRE-ASSEMBLY (Raw Part)
+                </button>
+                <button
+                  className={`stage-chip-btn ${inspectionStage === 'in_process' ? 'stage-active-in' : ''}`}
+                  onClick={() => {
+                    soundFx.playClick();
+                    setInspectionStage('in_process');
+                    setOpticalScanResult(null);
+                  }}
+                  title="Stage 2: In-Process (Current Step Alignment & Concentricity Check)"
+                >
+                  🔵 2. IN-PROCESS (Step {currentStep?.id || 1})
+                </button>
+                <button
+                  className={`stage-chip-btn ${inspectionStage === 'post' ? 'stage-active-post' : ''}`}
+                  onClick={() => {
+                    soundFx.playClick();
+                    setInspectionStage('post');
+                    setOpticalScanResult(null);
+                  }}
+                  title="Stage 3: Full Post-Assembly (Complete Vehicle / Unit Final EOL Sign-Off)"
+                >
+                  🟣 3. POST-ASSEMBLY (100% Full Unit)
+                </button>
+              </div>
+            )}
+
             <div className="poka-camera-box">
               {/* Hidden Processing Canvas for Pixel CV */}
               <canvas ref={canvasRef} style={{ display: 'none' }} />
