@@ -7,6 +7,9 @@ export default function PokaYokeQRScannerModal({
   isOpen,
   onClose,
   currentStep,
+  allSteps = [],
+  currentStepIndex = 0,
+  onSelectStepIndex,
   onPartVerified,
   selectedLanguage = 'en'
 }) {
@@ -41,8 +44,10 @@ export default function PokaYokeQRScannerModal({
   const animFrameIdRef = useRef(null);
   const scanCoolDownRef = useRef(false);
 
-  const expectedCode = (currentStep?.partCode || 'PRT-01').trim();
-  const expectedName = currentStep?.partName || currentStep?.title || 'Automotive Component';
+  const availableSteps = allSteps && allSteps.length > 0 ? allSteps : (currentStep ? [currentStep] : []);
+  const activeStep = (availableSteps && availableSteps[currentStepIndex]) ? availableSteps[currentStepIndex] : (currentStep || availableSteps[0] || {});
+  const expectedCode = (activeStep?.partCode || 'PRT-01').trim();
+  const expectedName = activeStep?.partName || activeStep?.title || 'Automotive Component';
 
   // Generate Real QR Code for matching
   useEffect(() => {
@@ -681,6 +686,63 @@ export default function PokaYokeQRScannerModal({
             </div>
             <button className="poka-close-btn" onClick={onClose} title="Close Scanner">
               ✕
+            </button>
+          </div>
+        </div>
+
+        {/* Target Component Selector Bar - Select ANY automotive component directly */}
+        <div className="poka-component-selector-bar font-mono">
+          <div className="poka-comp-tag">
+            <span className="poka-pulse-target">🎯</span>
+            <span className="poka-comp-label">TARGET COMPONENT:</span>
+          </div>
+          <select
+            className="poka-comp-dropdown font-mono"
+            value={currentStepIndex}
+            onChange={(e) => {
+              const idx = Number(e.target.value);
+              if (onSelectStepIndex) onSelectStepIndex(idx);
+              setOpticalScanResult(null);
+              soundFx.playClick();
+            }}
+          >
+            {availableSteps.map((step, idx) => (
+              <option key={idx} value={idx}>
+                Step {String(step.id || idx + 1).padStart(2, '0')}: {step.partName || step.title} [{step.partCode || `PRT-${idx+1}`}]
+              </option>
+            ))}
+          </select>
+          <div className="poka-comp-arrows">
+            <button
+              className="btn-poka-arrow"
+              disabled={currentStepIndex === 0}
+              onClick={() => {
+                if (onSelectStepIndex && currentStepIndex > 0) {
+                  onSelectStepIndex(currentStepIndex - 1);
+                  setOpticalScanResult(null);
+                  soundFx.playClick();
+                }
+              }}
+              title="Previous Component"
+            >
+              ◀ Prev Part
+            </button>
+            <span className="poka-part-fraction font-mono">
+              {String(currentStepIndex + 1).padStart(2, '0')} / {String(availableSteps.length).padStart(2, '0')}
+            </span>
+            <button
+              className="btn-poka-arrow"
+              disabled={currentStepIndex >= availableSteps.length - 1}
+              onClick={() => {
+                if (onSelectStepIndex && currentStepIndex < availableSteps.length - 1) {
+                  onSelectStepIndex(currentStepIndex + 1);
+                  setOpticalScanResult(null);
+                  soundFx.playClick();
+                }
+              }}
+              title="Next Component"
+            >
+              Next Part ▶
             </button>
           </div>
         </div>

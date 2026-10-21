@@ -92,7 +92,7 @@ export default function App() {
           : (effectiveModule === 'clutch'
             ? CLUTCH_ASSEMBLY_STEPS
             : (effectiveModule === 'knuckle' ? KNUCKLE_JOINT_STEPS : ASSEMBLY_STEPS)))
-    ) : []
+    ) : ASSEMBLY_STEPS
   );
   const currentStep = stepsList[currentStepIndex] || stepsList[0] || null;
 
@@ -1397,6 +1397,9 @@ export default function App() {
         isOpen={isQRScannerOpen}
         onClose={() => setIsQRScannerOpen(false)}
         currentStep={currentStep}
+        allSteps={stepsList}
+        currentStepIndex={currentStepIndex}
+        onSelectStepIndex={(idx) => setCurrentStepIndex(idx)}
         onPartVerified={handlePartQRVerified}
         selectedLanguage={selectedVoiceLanguage}
       />
