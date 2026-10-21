@@ -146,11 +146,13 @@ export default function AssemblyViewer3D({
 
     // Ghost Hologram Material for upcoming unassembled parts
     ghostMatRef.current = new THREE.MeshStandardMaterial({
-      color: 0x38bdf8,
+      color: 0x00f0ff,
+      emissive: new THREE.Color(0x004466),
+      emissiveIntensity: 0.45,
       transparent: true,
-      opacity: 0.07,
-      roughness: 0.35,
-      metalness: 0.15,
+      opacity: 0.28,
+      roughness: 0.25,
+      metalness: 0.65,
       wireframe: false,
       depthWrite: false,
       side: THREE.DoubleSide

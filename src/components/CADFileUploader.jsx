@@ -164,9 +164,9 @@ export function applyPBRMaterials(obj) {
       // 6. Clutch: Dual-Mass Flywheel & Starter Ring
       else if (name.includes('flywheel') || name.includes('dmf') || name.includes('ring_gear')) {
         child.material = new THREE.MeshStandardMaterial({
-          color: 0x94a3b8, // Heavy Ductile Cast Iron
-          metalness: 0.82,
-          roughness: 0.26,
+          color: 0xd8e2ec, // Bright Polished Machined Steel
+          metalness: 0.94,
+          roughness: 0.15,
           name: 'flywheelMat'
         });
       }
