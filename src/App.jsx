@@ -1192,9 +1192,9 @@ export default function App() {
                   setIsQRScannerOpen(true);
                 }}
                 disabled={stepsList.length === 0}
-                title="Scan component QR / Barcode with webcam (Poka-Yoke Machine Vision)"
+                title="Real-Time AI Optical Component Defect & Poka-Yoke Camera Scanner"
               >
-                📱 QR Scanner
+                🔬 AI Optical Defect Scanner
               </button>
             </div>
           </div>

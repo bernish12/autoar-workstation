@@ -5162,3 +5162,311 @@
   box-shadow: 0 0 16px rgba(0, 240, 255, 0.4);
   transform: translateY(-1px);
 }
+
+/* =========================================================================
+   LIVE AI OPTICAL COMPONENT DEFECT SCANNER STYLES
+   ========================================================================= */
+
+.scanner-mode-tabs {
+  display: flex;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 4px;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 11px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+
+.tab-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tab-btn.tab-active {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(2, 132, 199, 0.35));
+  color: #00f0ff;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
+  border: 1px solid rgba(0, 240, 255, 0.5);
+}
+
+.poka-cv-overlay-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.poka-viewfinder-header-tag {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(4, 8, 16, 0.85);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: #38bdf8;
+  font-size: 10.5px;
+  padding: 4px 14px;
+  border-radius: 14px;
+  z-index: 10;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+}
+
+.optical-control-strip {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-scan-action-primary {
+  flex: 1;
+  background: linear-gradient(135deg, #00f0ff, #0284c7);
+  color: #070a12;
+  font-weight: 800;
+  font-size: 12.5px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-scan-action-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 0 28px rgba(0, 240, 255, 0.7);
+}
+
+.btn-scan-action-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-scan-action-primary.pulse-scanning {
+  animation: pulseScanBtn 1s infinite alternate;
+}
+
+@keyframes pulseScanBtn {
+  from { box-shadow: 0 0 15px rgba(0, 240, 255, 0.4); }
+  to { box-shadow: 0 0 35px rgba(0, 240, 255, 0.9); }
+}
+
+.btn-toggle-sim-defect {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #cbd5e1;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-toggle-sim-defect:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: #00f0ff;
+}
+
+.btn-toggle-sim-defect.sim-on {
+  background: rgba(225, 29, 72, 0.2);
+  border-color: #f43f5e;
+  color: #fda4af;
+  box-shadow: 0 0 14px rgba(244, 63, 94, 0.3);
+}
+
+.optical-telemetry-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.telemetry-hdr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  color: #94a3b8;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.status-indicator-live {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #10b981;
+  font-size: 10px;
+}
+
+.telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.tele-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tele-lbl {
+  font-size: 9.5px;
+  color: #64748b;
+  letter-spacing: 0.5px;
+}
+
+.tele-val {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.tele-val small {
+  font-size: 10px;
+  color: #94a3b8;
+  font-weight: normal;
+}
+
+.tele-sub {
+  font-size: 8.5px;
+  color: #38bdf8;
+}
+
+.optical-report-card {
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: fadeIn 0.3s ease;
+}
+
+.optical-report-card.report-pass {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid #10b981;
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.2);
+}
+
+.optical-report-card.report-defect {
+  background: rgba(225, 29, 72, 0.15);
+  border: 1px solid #f43f5e;
+  box-shadow: 0 0 18px rgba(244, 63, 94, 0.25);
+}
+
+.report-hdr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.report-badge {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.report-pass .report-badge { color: #10b981; }
+.report-defect .report-badge { color: #f43f5e; }
+
+.report-time {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.report-verdict {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.report-pass .report-verdict {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+}
+
+.report-defect .report-verdict {
+  background: rgba(225, 29, 72, 0.25);
+  color: #fda4af;
+}
+
+.report-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  font-size: 10.5px;
+}
+
+.r-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.r-item span {
+  color: #64748b;
+  font-size: 9px;
+}
+
+.r-item strong {
+  color: #e2e8f0;
+}
+
+.optical-instruction-box {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px dashed rgba(0, 240, 255, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.optical-instruction-box .instruction-icon {
+  font-size: 20px;
+}
+
+.optical-instruction-box h4 {
+  font-size: 11px;
+  color: #00f0ff;
+  margin: 0;
+}
+
+.optical-instruction-box ol {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 10px;
+  color: #94a3b8;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.optical-instruction-box strong {
+  color: #38bdf8;
+}
