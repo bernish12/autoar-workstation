@@ -886,44 +886,88 @@ def create_simple_easy_presentation():
         p.font.size = Pt(9.5)
         p.font.color.rgb = MUTED_TEXT
 
-    # Simple Easy Comparison Box (Bottom)
-    cmp_box = slide9.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(4.0), Inches(11.733), Inches(2.9))
-    cmp_box.fill.solid()
-    cmp_box.fill.fore_color.rgb = CARD_BG
-    cmp_box.line.color.rgb = BORDER_COLOR
-    tf_cmp = cmp_box.text_frame
-    tf_cmp.word_wrap = True
-    tf_cmp.margin_left = tf_cmp.margin_top = tf_cmp.margin_right = tf_cmp.margin_bottom = Inches(0.25)
-
-    p = tf_cmp.paragraphs[0]
-    p.text = "SIMPLE COMPARISON: OLD WAY vs. OUR AR SYSTEM"
-    p.font.bold = True
-    p.font.size = Pt(12)
-    p.font.color.rgb = CYAN_ACCENT
-    p.space_after = Pt(10)
-
-    cmps = [
-        ("Work Instructions", "Confusing 2D paper binder with flat diagrams", "Interactive 3D animated parts floating directly on real car"),
-        ("Bolt Torque Check", "Operator writes torque on paper (often forgotten)", "Digital lock — system blocks progress until bolt is torqued!"),
-        ("Worker Comfort", "Worker constantly looks down, causing neck strain", "Worker looks straight at assembly with hands free for tools"),
-        ("Quality Audit", "Inspector checks parts only at the end of the day", "Live instant ISO quality verification certificate generated on-screen")
+    # 4 Core Business & Operational Impact Cards (Bottom)
+    impact_cards = [
+        (
+            "01. PRODUCTIVITY",
+            "Productivity Increase",
+            [
+                "41% faster assembly cycle (14.5m down to 8.5m).",
+                "Eliminates line bottlenecks & takt-time delays.",
+                "Maximizes daily automobile manufacturing output."
+            ],
+            CYAN_ACCENT
+        ),
+        (
+            "02. WORK IMPROVEMENT",
+            "Shop-Floor Improvement",
+            [
+                "Interactive 3D animated steps replace paper binders.",
+                "Hands-free voice assistant designed for oily gloves.",
+                "Zero worker confusion, less fatigue & no neck strain."
+            ],
+            EMERALD_GREEN
+        ),
+        (
+            "03. DEFECTS REDUCED",
+            "Zero-Defect Quality",
+            [
+                "Smart torque interlock physically prevents missed bolts.",
+                "AI optical scanner verifies correct bin & component.",
+                "100% compliance with ISO 9001 / IATF 16949 standards."
+            ],
+            AMBER_GOLD
+        ),
+        (
+            "04. COMPANY SAVINGS",
+            "Company Money Saved",
+            [
+                "Eliminates expensive scrap, rework & recall penalties.",
+                "Worker training time cut by 85% (2-3 days vs weeks).",
+                "Zero costly proprietary CAD/AR software license fees."
+            ],
+            CYAN_ACCENT
+        )
     ]
-    for c_idx, (feature, old_w, new_w) in enumerate(cmps):
-        p = tf_cmp.add_paragraph()
-        p.text = f"• {feature}: "
+
+    for c_idx, (card_code, card_title, bullets, acc_col) in enumerate(impact_cards):
+        c_imp = slide9.shapes.add_shape(
+            MSO_SHAPE.ROUNDED_RECTANGLE,
+            Inches(0.8 + c_idx * 2.99),
+            Inches(3.95),
+            Inches(2.76),
+            Inches(3.10)
+        )
+        c_imp.fill.solid()
+        c_imp.fill.fore_color.rgb = CARD_BG
+        c_imp.line.color.rgb = acc_col
+        tf_imp = c_imp.text_frame
+        tf_imp.word_wrap = True
+        tf_imp.margin_left = tf_imp.margin_top = tf_imp.margin_right = tf_imp.margin_bottom = Inches(0.18)
+
+        # Code header (e.g. 01. PRODUCTIVITY)
+        p = tf_imp.paragraphs[0]
+        p.text = card_code
+        p.font.bold = True
+        p.font.size = Pt(11)
+        p.font.color.rgb = acc_col
+        p.space_after = Pt(2)
+
+        # Subtitle
+        p = tf_imp.add_paragraph()
+        p.text = card_title
         p.font.bold = True
         p.font.size = Pt(10)
-        p.font.color.rgb = AMBER_GOLD
-        r = p.add_run()
-        r.text = f"Old: {old_w}   ➔   "
-        r.font.bold = False
-        r.font.size = Pt(9.5)
-        r.font.color.rgb = MUTED_TEXT
-        r2 = p.add_run()
-        r2.text = f"Our AR: {new_w}"
-        r2.font.bold = True
-        r2.font.size = Pt(9.5)
-        r2.font.color.rgb = WHITE_TEXT
+        p.font.color.rgb = WHITE_TEXT
+        p.space_after = Pt(6)
+
+        # Bullets
+        for b_text in bullets:
+            p = tf_imp.add_paragraph()
+            p.text = "• " + b_text
+            p.font.size = Pt(8.8)
+            p.font.color.rgb = MUTED_TEXT
+            p.space_after = Pt(4)
     # =========================================================================
     # SLIDE 10: 6B. COST-BENEFIT & ECONOMIC IMPACT (COMMERCIAL VS AUTOAR)
     # =========================================================================
