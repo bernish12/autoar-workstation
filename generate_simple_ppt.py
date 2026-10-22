@@ -565,7 +565,7 @@ def create_simple_easy_presentation():
             [
                 "Browser-native speech recognition for voice commands.",
                 "Hands-free control ('Next', 'Torque', 'Explode') for oily gloves.",
-                "Bilingual voice guidance feedback in English & Tamil."
+                "Multilingual voice guidance: English, Tamil, Malayalam & Hindi."
             ],
             CYAN_ACCENT
         )
@@ -843,6 +843,7 @@ def create_simple_easy_presentation():
     cap_sw.text_frame.paragraphs[0].font.size = Pt(9.5)
     cap_sw.text_frame.paragraphs[0].font.bold = True
     cap_sw.text_frame.paragraphs[0].font.color.rgb = CYAN_ACCENT
+
 
     # =========================================================================
     # SLIDE 9: 6. RESULTS & DISCUSSION (CLEAR NUMBERS & COMPARISON)
@@ -1128,18 +1129,21 @@ def create_simple_easy_presentation():
     p.font.color.rgb = CYAN_ACCENT
     p.alignment = PP_ALIGN.CENTER
     
-    # Save to fresh updated file
-    p_fresh = "D:/final year ppt faaah/AR_Assembly_Review_Updated.pptx"
-    prs.save(p_fresh)
-    print(f"Saved fresh: {p_fresh}")
-
-    # Also update AR_Assembly_Final_Review_Presentation if not locked
-    try:
-        p1 = "D:/final year ppt faaah/AR_Assembly_Final_Review_Presentation.pptx"
-        prs.save(p1)
-        print(f"Saved: {p1}")
-    except Exception:
-        print("Note: Target file locked in PowerPoint.")
+    # Save across all project and delivery locations
+    save_targets = [
+        "D:/final year ppt faaah/AR_Assembly_Final_Review_Presentation_Latest.pptx",
+        "D:/final year ppt faaah/AR_Assembly_Review_Updated.pptx",
+        "D:/final year ppt faaah/AR_Assembly_Final_Review_Presentation.pptx",
+        "D:/new web record file/AR_Assembly_Final_Review_Presentation.pptx",
+        "C:/final doc/AR_Assembly_Final_Review_Presentation_Latest.pptx",
+        "C:/final doc/AR_Assembly_Final_Review_Presentation.pptx"
+    ]
+    for target in save_targets:
+        try:
+            prs.save(target)
+            print(f"Saved: {target}")
+        except Exception as e:
+            print(f"Could not save {target}: {e}")
 
 if __name__ == "__main__":
     create_simple_easy_presentation()
