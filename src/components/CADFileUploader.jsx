@@ -164,36 +164,36 @@ export function applyPBRMaterials(obj) {
       // 6. Clutch: Dual-Mass Flywheel & Starter Ring
       else if (name.includes('flywheel') || name.includes('dmf') || name.includes('ring_gear')) {
         child.material = new THREE.MeshStandardMaterial({
-          color: 0xd8e2ec, // Bright Polished Machined Steel
-          metalness: 0.94,
-          roughness: 0.15,
+          color: 0xf1f5f9, // Ultra-Bright Polished Machined Alloy Steel
+          metalness: 0.96,
+          roughness: 0.12,
           name: 'flywheelMat'
         });
       }
       // 7. Clutch: Crankshaft Stretch Bolts
       else if (name.includes('crank') && name.includes('bolt')) {
         child.material = new THREE.MeshStandardMaterial({
-          color: 0x1e293b, // Grade 12.9 Black Oxide High-Tensile Steel
-          metalness: 0.92,
-          roughness: 0.28,
+          color: 0xe2e8f0, // Polished Chrome High-Tensile Fastener Steel
+          metalness: 0.96,
+          roughness: 0.10,
           name: 'crankBoltMat'
         });
       }
       // 8. Clutch: Transmission Input Spline Shaft
       else if (name.includes('spline') || name.includes('input_shaft')) {
         child.material = new THREE.MeshStandardMaterial({
-          color: 0x475569, // MoS2 Micro-Dosed Hardened Spline Steel
-          metalness: 0.88,
-          roughness: 0.32,
+          color: 0x94a3b8, // Bright Hardened Spline Steel
+          metalness: 0.92,
+          roughness: 0.20,
           name: 'splineShaftMat'
         });
       }
       // 9. Clutch: Friction Disc lining & dampening springs
       else if (name.includes('friction') || name.includes('damper')) {
         child.material = new THREE.MeshStandardMaterial({
-          color: 0x334155, // High-Friction Organic Composite
-          metalness: 0.35,
-          roughness: 0.65,
+          color: 0x64748b, // High-Friction Organic Composite with Metallic Weave
+          metalness: 0.65,
+          roughness: 0.38,
           name: 'frictionDiscMat'
         });
       }

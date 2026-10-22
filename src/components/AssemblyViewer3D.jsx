@@ -345,9 +345,9 @@ export default function AssemblyViewer3D({
     const engineBossGeo = new THREE.CylinderGeometry(1.35, 1.35, 0.06, 36);
     engineBossGeo.rotateX(Math.PI / 2);
     const engineBossMesh = new THREE.Mesh(engineBossGeo, new THREE.MeshStandardMaterial({
-      color: 0x334155,
-      metalness: 0.82,
-      roughness: 0.32
+      color: 0x94a3b8, // Bright Machined Billet Aluminum / Engine Block Simulator
+      metalness: 0.90,
+      roughness: 0.20
     }));
     engineBossMesh.position.set(0, 0.06, -0.60);
     clutchStandJig.add(engineBossMesh);
@@ -355,14 +355,14 @@ export default function AssemblyViewer3D({
     // Machined Crankshaft output flange datum socket
     const crankFlangeGeo = new THREE.CylinderGeometry(0.42, 0.42, 0.06, 28);
     crankFlangeGeo.rotateX(Math.PI / 2);
-    const crankFlangeMesh = new THREE.Mesh(crankFlangeGeo, new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.95, roughness: 0.18 }));
+    const crankFlangeMesh = new THREE.Mesh(crankFlangeGeo, new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.96, roughness: 0.12 }));
     crankFlangeMesh.position.set(0, 0.06, -0.54);
     clutchStandJig.add(crankFlangeMesh);
 
     // Recessed Crankshaft Pilot Pocket Bore (cavity where pilot bearing seats flush)
     const pilotPocketGeo = new THREE.CylinderGeometry(0.16, 0.16, 0.08, 24);
     pilotPocketGeo.rotateX(Math.PI / 2);
-    const pilotPocketMesh = new THREE.Mesh(pilotPocketGeo, new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.85 }));
+    const pilotPocketMesh = new THREE.Mesh(pilotPocketGeo, new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.85, roughness: 0.25 }));
     pilotPocketMesh.position.set(0, 0.06, -0.52);
     clutchStandJig.add(pilotPocketMesh);
 
